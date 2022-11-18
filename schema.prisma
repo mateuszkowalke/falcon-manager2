@@ -21,6 +21,7 @@ model User {
   isAdmin          Boolean           @default(false)
   breedingProjects BreedingProject[] @relation("BreedingProject_owner")
   addresses        Address[]         @relation("Address_owner")
+  aviaries         Aviary[]          @relation("Aviary_owner")
   createdAt        DateTime?         @default(now())
   updatedAt        DateTime?         @default(now())
 }
@@ -30,10 +31,26 @@ model BreedingProject {
   name      String    @default("")
   vetRegNo  String    @default("")
   address   Address?  @relation("Address_breedingProject")
+  aviaries  Aviary?   @relation("Aviary_breedingProject")
   owner     User?     @relation("BreedingProject_owner", fields: [ownerId], references: [id])
   ownerId   String?   @map("owner")
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
+
+  @@index([ownerId])
+}
+
+model Aviary {
+  id                String           @id @default(cuid())
+  name              String           @default("")
+  capacity          Int
+  lastCleaned       DateTime?
+  breedingProject   BreedingProject? @relation("Aviary_breedingProject", fields: [breedingProjectId], references: [id])
+  breedingProjectId String?          @unique @map("breedingProject")
+  owner             User?            @relation("Aviary_owner", fields: [ownerId], references: [id])
+  ownerId           String?          @map("owner")
+  createdAt         DateTime?        @default(now())
+  updatedAt         DateTime?        @default(now())
 
   @@index([ownerId])
 }

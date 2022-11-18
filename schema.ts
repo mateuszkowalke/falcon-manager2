@@ -1,9 +1,5 @@
 import { list } from "@keystone-6/core";
-import {
-  isAdmin,
-  defaultAccess,
-  attachSessionUser
-} from "./auth/auth";
+import { isAdmin, defaultAccess, attachSessionUser } from "./auth/auth";
 
 import {
   text,
@@ -11,6 +7,7 @@ import {
   password,
   timestamp,
   checkbox,
+  integer,
 } from "@keystone-6/core/fields";
 
 import type { Lists } from ".keystone/types";
@@ -43,6 +40,10 @@ export const lists: Lists = {
         ref: "Address.owner",
         many: true,
       }),
+      aviaries: relationship({
+        ref: "Aviary.owner",
+        many: true,
+      }),
       createdAt: timestamp({
         defaultValue: { kind: "now" },
       }),
@@ -63,9 +64,40 @@ export const lists: Lists = {
       name: text({ validation: { isRequired: true } }),
       vetRegNo: text({ validation: { isRequired: true } }),
       address: relationship({ ref: "Address.breedingProject" }),
+      aviaries: relationship({ ref: "Aviary.breedingProject" }),
       owner: relationship({
         ref: "User.breedingProjects",
         ui: { hideCreate: true },
+        many: false
+      }),
+      createdAt: timestamp({
+        defaultValue: { kind: "now" },
+      }),
+      updatedAt: timestamp({
+        defaultValue: { kind: "now" },
+      }),
+    },
+
+    hooks: {
+      resolveInput: attachSessionUser,
+    },
+  }),
+
+  Aviary: list({
+    access: defaultAccess,
+
+    fields: {
+      name: text({ validation: { isRequired: true } }),
+      capacity: integer({ validation: { isRequired: true, min: 0 }, defaultValue: 0 }),
+      lastCleaned: timestamp(),
+      breedingProject: relationship({
+        ref: "BreedingProject.aviaries",
+        many: false,
+      }),
+      owner: relationship({
+        ref: "User.aviaries",
+        ui: { hideCreate: true },
+        many: false
       }),
       createdAt: timestamp({
         defaultValue: { kind: "now" },
@@ -93,6 +125,7 @@ export const lists: Lists = {
       owner: relationship({
         ref: "User.addresses",
         ui: { hideCreate: true },
+        many: false
       }),
       createdAt: timestamp({
         defaultValue: { kind: "now" },

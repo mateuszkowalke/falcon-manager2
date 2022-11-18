@@ -57,7 +57,7 @@ describe("Breeding project", () => {
         },
       };
 
-      const address = await context
+      const breedingProject = await context
         .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
         .query.BreedingProject.createOne({
           data: {
@@ -66,7 +66,7 @@ describe("Breeding project", () => {
         });
 
       const breedingProjectFinal = await prisma.breedingProject.findUnique({
-        where: { id: address.id },
+        where: { id: breedingProject.id },
         include: {
           address: true,
         },

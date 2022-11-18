@@ -43,38 +43,85 @@ describe("Aviary", () => {
     });
 
     it("Should create aviary and nested breeding project and address with owner set to session user id", async () => {
-      const breedingProjectData = {
-        name: "testBreedingProjectName",
-        vetRegNo: "1234",
-        address: {
+      const aviaryData = {
+        name: "testAviary",
+        capacity: 4,
+        lastCleaned: new Date(),
+        breedingProject: {
           create: {
-            street: "testStreet",
-            no: "0",
-            zipCode: "00-000",
-            city: "testCity",
-            country: "testCountry",
+            name: "testBreedingProjectName",
+            vetRegNo: "1234",
+            address: {
+              create: {
+                street: "testStreet",
+                no: "0",
+                zipCode: "00-000",
+                city: "testCity",
+                country: "testCountry",
+              },
+            },
           },
         },
       };
 
-      const address = await context
+      const aviary = await context
         .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
-        .query.BreedingProject.createOne({
+        .query.Aviary.createOne({
           data: {
-            ...breedingProjectData,
+            ...aviaryData,
           },
         });
 
-      const breedingProjectFinal = await prisma.breedingProject.findUnique({
-        where: { id: address.id },
+      const aviaryFinal = await prisma.aviary.findUnique({
+        where: { id: aviary.id },
         include: {
-          address: true,
+          breedingProject: {
+            include: {
+              address: true,
+            },
+          },
         },
       });
 
       // need to check in db as afterOperation hook doesn't change returned data
-      expect(breedingProjectFinal.ownerId).toBe(noAdmin.id);
-      expect(breedingProjectFinal.address.ownerId).toBe(noAdmin.id);
+      expect(aviaryFinal.ownerId).toBe(noAdmin.id);
+      expect(aviaryFinal.breedingProject.ownerId).toBe(noAdmin.id);
+      expect(aviaryFinal.breedingProject.address.ownerId).toBe(noAdmin.id);
+    });
+
+    it("Should not allow to create aviary with capacity less than 0", async () => {
+      const aviaryData = {
+        name: "testAviary",
+        capacity: -4,
+        lastCleaned: new Date(),
+        breedingProject: {
+          create: {
+            name: "testBreedingProjectName",
+            vetRegNo: "1234",
+            address: {
+              create: {
+                street: "testStreet",
+                no: "0",
+                zipCode: "00-000",
+                city: "testCity",
+                country: "testCountry",
+              },
+            },
+          },
+        },
+      };
+
+      try {
+        await context
+          .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
+          .query.Aviary.createOne({
+            data: {
+              ...aviaryData,
+            },
+          });
+      } catch (err) {
+        expect(err).not.toBeNull();
+      }
     });
   });
 });

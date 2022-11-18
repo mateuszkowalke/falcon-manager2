@@ -12,6 +12,8 @@ type User {
   breedingProjectsCount(where: BreedingProjectWhereInput! = {}): Int
   addresses(where: AddressWhereInput! = {}, orderBy: [AddressOrderByInput!]! = [], take: Int, skip: Int! = 0): [Address!]
   addressesCount(where: AddressWhereInput! = {}): Int
+  aviaries(where: AviaryWhereInput! = {}, orderBy: [AviaryOrderByInput!]! = [], take: Int, skip: Int! = 0): [Aviary!]
+  aviariesCount(where: AviaryWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -38,6 +40,7 @@ input UserWhereInput {
   isAdmin: BooleanFilter
   breedingProjects: BreedingProjectManyRelationFilter
   addresses: AddressManyRelationFilter
+  aviaries: AviaryManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
 }
@@ -104,6 +107,12 @@ input AddressManyRelationFilter {
   none: AddressWhereInput
 }
 
+input AviaryManyRelationFilter {
+  every: AviaryWhereInput
+  some: AviaryWhereInput
+  none: AviaryWhereInput
+}
+
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -138,6 +147,7 @@ input UserUpdateInput {
   isAdmin: Boolean
   breedingProjects: BreedingProjectRelateToManyForUpdateInput
   addresses: AddressRelateToManyForUpdateInput
+  aviaries: AviaryRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -156,6 +166,13 @@ input AddressRelateToManyForUpdateInput {
   connect: [AddressWhereUniqueInput!]
 }
 
+input AviaryRelateToManyForUpdateInput {
+  disconnect: [AviaryWhereUniqueInput!]
+  set: [AviaryWhereUniqueInput!]
+  create: [AviaryCreateInput!]
+  connect: [AviaryWhereUniqueInput!]
+}
+
 input UserUpdateArgs {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
@@ -169,6 +186,7 @@ input UserCreateInput {
   isAdmin: Boolean
   breedingProjects: BreedingProjectRelateToManyForCreateInput
   addresses: AddressRelateToManyForCreateInput
+  aviaries: AviaryRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -183,11 +201,17 @@ input AddressRelateToManyForCreateInput {
   connect: [AddressWhereUniqueInput!]
 }
 
+input AviaryRelateToManyForCreateInput {
+  create: [AviaryCreateInput!]
+  connect: [AviaryWhereUniqueInput!]
+}
+
 type BreedingProject {
   id: ID!
   name: String
   vetRegNo: String
   address: Address
+  aviaries: Aviary
   owner: User
   createdAt: DateTime
   updatedAt: DateTime
@@ -205,6 +229,7 @@ input BreedingProjectWhereInput {
   name: StringFilter
   vetRegNo: StringFilter
   address: AddressWhereInput
+  aviaries: AviaryWhereInput
   owner: UserWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -222,6 +247,7 @@ input BreedingProjectUpdateInput {
   name: String
   vetRegNo: String
   address: AddressRelateToOneForUpdateInput
+  aviaries: AviaryRelateToOneForUpdateInput
   owner: UserRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -230,6 +256,12 @@ input BreedingProjectUpdateInput {
 input AddressRelateToOneForUpdateInput {
   create: AddressCreateInput
   connect: AddressWhereUniqueInput
+  disconnect: Boolean
+}
+
+input AviaryRelateToOneForUpdateInput {
+  create: AviaryCreateInput
+  connect: AviaryWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -248,6 +280,7 @@ input BreedingProjectCreateInput {
   name: String
   vetRegNo: String
   address: AddressRelateToOneForCreateInput
+  aviaries: AviaryRelateToOneForCreateInput
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -258,9 +291,99 @@ input AddressRelateToOneForCreateInput {
   connect: AddressWhereUniqueInput
 }
 
+input AviaryRelateToOneForCreateInput {
+  create: AviaryCreateInput
+  connect: AviaryWhereUniqueInput
+}
+
 input UserRelateToOneForCreateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+type Aviary {
+  id: ID!
+  name: String
+  capacity: Int
+  lastCleaned: DateTime
+  breedingProject: BreedingProject
+  owner: User
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input AviaryWhereUniqueInput {
+  id: ID
+}
+
+input AviaryWhereInput {
+  AND: [AviaryWhereInput!]
+  OR: [AviaryWhereInput!]
+  NOT: [AviaryWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  capacity: IntFilter
+  lastCleaned: DateTimeNullableFilter
+  breedingProject: BreedingProjectWhereInput
+  owner: UserWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
+}
+
+input AviaryOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  capacity: OrderDirection
+  lastCleaned: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input AviaryUpdateInput {
+  name: String
+  capacity: Int
+  lastCleaned: DateTime
+  breedingProject: BreedingProjectRelateToOneForUpdateInput
+  owner: UserRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input BreedingProjectRelateToOneForUpdateInput {
+  create: BreedingProjectCreateInput
+  connect: BreedingProjectWhereUniqueInput
+  disconnect: Boolean
+}
+
+input AviaryUpdateArgs {
+  where: AviaryWhereUniqueInput!
+  data: AviaryUpdateInput!
+}
+
+input AviaryCreateInput {
+  name: String
+  capacity: Int
+  lastCleaned: DateTime
+  breedingProject: BreedingProjectRelateToOneForCreateInput
+  owner: UserRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input BreedingProjectRelateToOneForCreateInput {
+  create: BreedingProjectCreateInput
+  connect: BreedingProjectWhereUniqueInput
 }
 
 type Address {
@@ -319,12 +442,6 @@ input AddressUpdateInput {
   updatedAt: DateTime
 }
 
-input BreedingProjectRelateToOneForUpdateInput {
-  create: BreedingProjectCreateInput
-  connect: BreedingProjectWhereUniqueInput
-  disconnect: Boolean
-}
-
 input AddressUpdateArgs {
   where: AddressWhereUniqueInput!
   data: AddressUpdateInput!
@@ -340,11 +457,6 @@ input AddressCreateInput {
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
-}
-
-input BreedingProjectRelateToOneForCreateInput {
-  create: BreedingProjectCreateInput
-  connect: BreedingProjectWhereUniqueInput
 }
 
 """
@@ -365,6 +477,12 @@ type Mutation {
   updateBreedingProjects(data: [BreedingProjectUpdateArgs!]!): [BreedingProject]
   deleteBreedingProject(where: BreedingProjectWhereUniqueInput!): BreedingProject
   deleteBreedingProjects(where: [BreedingProjectWhereUniqueInput!]!): [BreedingProject]
+  createAviary(data: AviaryCreateInput!): Aviary
+  createAviaries(data: [AviaryCreateInput!]!): [Aviary]
+  updateAviary(where: AviaryWhereUniqueInput!, data: AviaryUpdateInput!): Aviary
+  updateAviaries(data: [AviaryUpdateArgs!]!): [Aviary]
+  deleteAviary(where: AviaryWhereUniqueInput!): Aviary
+  deleteAviaries(where: [AviaryWhereUniqueInput!]!): [Aviary]
   createAddress(data: AddressCreateInput!): Address
   createAddresses(data: [AddressCreateInput!]!): [Address]
   updateAddress(where: AddressWhereUniqueInput!, data: AddressUpdateInput!): Address
@@ -401,6 +519,9 @@ type Query {
   breedingProjects(where: BreedingProjectWhereInput! = {}, orderBy: [BreedingProjectOrderByInput!]! = [], take: Int, skip: Int! = 0): [BreedingProject!]
   breedingProject(where: BreedingProjectWhereUniqueInput!): BreedingProject
   breedingProjectsCount(where: BreedingProjectWhereInput! = {}): Int
+  aviaries(where: AviaryWhereInput! = {}, orderBy: [AviaryOrderByInput!]! = [], take: Int, skip: Int! = 0): [Aviary!]
+  aviary(where: AviaryWhereUniqueInput!): Aviary
+  aviariesCount(where: AviaryWhereInput! = {}): Int
   addresses(where: AddressWhereInput! = {}, orderBy: [AddressOrderByInput!]! = [], take: Int, skip: Int! = 0): [Address!]
   address(where: AddressWhereUniqueInput!): Address
   addressesCount(where: AddressWhereInput! = {}): Int

@@ -42,9 +42,9 @@ function isAdmin({ session: session2 }) {
 }
 function allowAdminAndCurrentUser({
   session: session2,
-  listKey
+  list: list2
 }) {
-  return session2?.data.isAdmin ? true : listKey === "user" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
+  return session2?.data.isAdmin ? true : list2 === "User" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
 }
 function attachSessionUser({ operation, context, resolvedData }) {
   if (operation === "create") {
@@ -116,6 +116,10 @@ var lists = {
         ref: "Address.owner",
         many: true
       }),
+      aviaries: (0, import_fields.relationship)({
+        ref: "Aviary.owner",
+        many: true
+      }),
       createdAt: (0, import_fields.timestamp)({
         defaultValue: { kind: "now" }
       }),
@@ -133,9 +137,37 @@ var lists = {
       name: (0, import_fields.text)({ validation: { isRequired: true } }),
       vetRegNo: (0, import_fields.text)({ validation: { isRequired: true } }),
       address: (0, import_fields.relationship)({ ref: "Address.breedingProject" }),
+      aviaries: (0, import_fields.relationship)({ ref: "Aviary.breedingProject" }),
       owner: (0, import_fields.relationship)({
         ref: "User.breedingProjects",
-        ui: { hideCreate: true }
+        ui: { hideCreate: true },
+        many: false
+      }),
+      createdAt: (0, import_fields.timestamp)({
+        defaultValue: { kind: "now" }
+      }),
+      updatedAt: (0, import_fields.timestamp)({
+        defaultValue: { kind: "now" }
+      })
+    },
+    hooks: {
+      resolveInput: attachSessionUser
+    }
+  }),
+  Aviary: (0, import_core.list)({
+    access: defaultAccess,
+    fields: {
+      name: (0, import_fields.text)({ validation: { isRequired: true } }),
+      capacity: (0, import_fields.integer)({ validation: { isRequired: true } }),
+      lastCleaned: (0, import_fields.timestamp)(),
+      breedingProject: (0, import_fields.relationship)({
+        ref: "BreedingProject.aviaries",
+        many: false
+      }),
+      owner: (0, import_fields.relationship)({
+        ref: "User.aviaries",
+        ui: { hideCreate: true },
+        many: false
       }),
       createdAt: (0, import_fields.timestamp)({
         defaultValue: { kind: "now" }
@@ -159,7 +191,8 @@ var lists = {
       breedingProject: (0, import_fields.relationship)({ ref: "BreedingProject.address" }),
       owner: (0, import_fields.relationship)({
         ref: "User.addresses",
-        ui: { hideCreate: true }
+        ui: { hideCreate: true },
+        many: false
       }),
       createdAt: (0, import_fields.timestamp)({
         defaultValue: { kind: "now" }
