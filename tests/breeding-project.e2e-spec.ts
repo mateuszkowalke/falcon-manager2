@@ -1,15 +1,34 @@
+import path from "path";
+
 import * as PrismaModule from ".prisma/client";
 import { getContext } from "@keystone-6/core/context";
 import { resetDatabase } from "@keystone-6/core/testing";
-import path from "path";
+import { Client } from "pg";
+
 import baseConfig from "../keystone";
 
-const dbUrl = `postgresql://testuser:testpass@localhost:5432/falcon_manager?schema=${process.env.JEST_WORKER_ID}`;
+const schema = process.env.JEST_WORKER_ID;
+const dbUrl = `postgresql://testuser:testpass@localhost:5432/falcon_manager?schema=${schema}`;
 const prismaSchemaPath = path.join(__dirname, "..", "schema.prisma");
 const config = { ...baseConfig, db: { ...baseConfig.db, url: dbUrl } };
 
 beforeEach(async () => {
   await resetDatabase(dbUrl, prismaSchemaPath);
+});
+
+afterAll(async () => {
+  if (schema) {
+    const client = new Client({
+      connectionString: dbUrl,
+    });
+    await client.connect();
+    try {
+      await client.query(`DROP SCHEMA ${client.escapeIdentifier(schema)} CASCADE`);
+    } catch (err) {
+      console.error(`Error removing test schema:\n${err}`);
+    }
+    await client.end();
+  }
 });
 
 const context = getContext(config, PrismaModule);
