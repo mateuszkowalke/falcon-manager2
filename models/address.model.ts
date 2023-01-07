@@ -15,7 +15,7 @@ export const Address = list({
     breedingProject: relationship({ ref: "BreedingProject.address" }),
     owner: relationship({
       ref: "User.addresses",
-      ui: { hideCreate: true },
+      ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
       many: false,
     }),
     createdAt: timestamp({

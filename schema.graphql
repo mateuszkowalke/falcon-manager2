@@ -8,6 +8,7 @@ type User {
   email: String
   password: PasswordState
   isAdmin: Boolean
+  falcons: Falcon
   breedingProjects(where: BreedingProjectWhereInput! = {}, orderBy: [BreedingProjectOrderByInput!]! = [], take: Int, skip: Int! = 0): [BreedingProject!]
   breedingProjectsCount(where: BreedingProjectWhereInput! = {}): Int
   addresses(where: AddressWhereInput! = {}, orderBy: [AddressOrderByInput!]! = [], take: Int, skip: Int! = 0): [Address!]
@@ -38,6 +39,7 @@ input UserWhereInput {
   lastName: StringFilter
   email: StringFilter
   isAdmin: BooleanFilter
+  falcons: FalconWhereInput
   breedingProjects: BreedingProjectManyRelationFilter
   addresses: AddressManyRelationFilter
   aviaries: AviaryManyRelationFilter
@@ -145,11 +147,18 @@ input UserUpdateInput {
   email: String
   password: String
   isAdmin: Boolean
+  falcons: FalconRelateToOneForUpdateInput
   breedingProjects: BreedingProjectRelateToManyForUpdateInput
   addresses: AddressRelateToManyForUpdateInput
   aviaries: AviaryRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+input FalconRelateToOneForUpdateInput {
+  create: FalconCreateInput
+  connect: FalconWhereUniqueInput
+  disconnect: Boolean
 }
 
 input BreedingProjectRelateToManyForUpdateInput {
@@ -184,11 +193,17 @@ input UserCreateInput {
   email: String
   password: String
   isAdmin: Boolean
+  falcons: FalconRelateToOneForCreateInput
   breedingProjects: BreedingProjectRelateToManyForCreateInput
   addresses: AddressRelateToManyForCreateInput
   aviaries: AviaryRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+input FalconRelateToOneForCreateInput {
+  create: FalconCreateInput
+  connect: FalconWhereUniqueInput
 }
 
 input BreedingProjectRelateToManyForCreateInput {
@@ -305,6 +320,7 @@ type Aviary {
   id: ID!
   name: String
   capacity: Int
+  falcons: Falcon
   lastCleaned: DateTime
   breedingProject: BreedingProject
   owner: User
@@ -323,6 +339,7 @@ input AviaryWhereInput {
   id: IDFilter
   name: StringFilter
   capacity: IntFilter
+  falcons: FalconWhereInput
   lastCleaned: DateTimeNullableFilter
   breedingProject: BreedingProjectWhereInput
   owner: UserWhereInput
@@ -353,6 +370,7 @@ input AviaryOrderByInput {
 input AviaryUpdateInput {
   name: String
   capacity: Int
+  falcons: FalconRelateToOneForUpdateInput
   lastCleaned: DateTime
   breedingProject: BreedingProjectRelateToOneForUpdateInput
   owner: UserRelateToOneForUpdateInput
@@ -374,6 +392,7 @@ input AviaryUpdateArgs {
 input AviaryCreateInput {
   name: String
   capacity: Int
+  falcons: FalconRelateToOneForCreateInput
   lastCleaned: DateTime
   breedingProject: BreedingProjectRelateToOneForCreateInput
   owner: UserRelateToOneForCreateInput
@@ -459,6 +478,138 @@ input AddressCreateInput {
   updatedAt: DateTime
 }
 
+type Falcon {
+  id: ID!
+  name: String
+  ring: String
+  sex: FalconSexType
+  birthDate: DateTime
+  source: String
+  widthYoung: Int
+  lengthYoung: Int
+  weightYoung: Int
+  widthOld: Int
+  lengthOld: Int
+  weightOld: Int
+  notes: String
+  aviary: Aviary
+  owner: User
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+enum FalconSexType {
+  UNKNOWN
+  MALE
+  FEMALE
+}
+
+input FalconWhereUniqueInput {
+  id: ID
+}
+
+input FalconWhereInput {
+  AND: [FalconWhereInput!]
+  OR: [FalconWhereInput!]
+  NOT: [FalconWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  ring: StringFilter
+  sex: FalconSexTypeNullableFilter
+  birthDate: DateTimeNullableFilter
+  source: StringFilter
+  widthYoung: IntNullableFilter
+  lengthYoung: IntNullableFilter
+  weightYoung: IntNullableFilter
+  widthOld: IntNullableFilter
+  lengthOld: IntNullableFilter
+  weightOld: IntNullableFilter
+  notes: StringFilter
+  aviary: AviaryWhereInput
+  owner: UserWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input FalconSexTypeNullableFilter {
+  equals: FalconSexType
+  in: [FalconSexType!]
+  notIn: [FalconSexType!]
+  not: FalconSexTypeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input FalconOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  ring: OrderDirection
+  sex: OrderDirection
+  birthDate: OrderDirection
+  source: OrderDirection
+  widthYoung: OrderDirection
+  lengthYoung: OrderDirection
+  weightYoung: OrderDirection
+  widthOld: OrderDirection
+  lengthOld: OrderDirection
+  weightOld: OrderDirection
+  notes: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input FalconUpdateInput {
+  name: String
+  ring: String
+  sex: FalconSexType
+  birthDate: DateTime
+  source: String
+  widthYoung: Int
+  lengthYoung: Int
+  weightYoung: Int
+  widthOld: Int
+  lengthOld: Int
+  weightOld: Int
+  notes: String
+  aviary: AviaryRelateToOneForUpdateInput
+  owner: UserRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input FalconUpdateArgs {
+  where: FalconWhereUniqueInput!
+  data: FalconUpdateInput!
+}
+
+input FalconCreateInput {
+  name: String
+  ring: String
+  sex: FalconSexType
+  birthDate: DateTime
+  source: String
+  widthYoung: Int
+  lengthYoung: Int
+  weightYoung: Int
+  widthOld: Int
+  lengthOld: Int
+  weightOld: Int
+  notes: String
+  aviary: AviaryRelateToOneForCreateInput
+  owner: UserRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -489,6 +640,12 @@ type Mutation {
   updateAddresses(data: [AddressUpdateArgs!]!): [Address]
   deleteAddress(where: AddressWhereUniqueInput!): Address
   deleteAddresses(where: [AddressWhereUniqueInput!]!): [Address]
+  createFalcon(data: FalconCreateInput!): Falcon
+  createFalcons(data: [FalconCreateInput!]!): [Falcon]
+  updateFalcon(where: FalconWhereUniqueInput!, data: FalconUpdateInput!): Falcon
+  updateFalcons(data: [FalconUpdateArgs!]!): [Falcon]
+  deleteFalcon(where: FalconWhereUniqueInput!): Falcon
+  deleteFalcons(where: [FalconWhereUniqueInput!]!): [Falcon]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -525,6 +682,9 @@ type Query {
   addresses(where: AddressWhereInput! = {}, orderBy: [AddressOrderByInput!]! = [], take: Int, skip: Int! = 0): [Address!]
   address(where: AddressWhereUniqueInput!): Address
   addressesCount(where: AddressWhereInput! = {}): Int
+  falcons(where: FalconWhereInput! = {}, orderBy: [FalconOrderByInput!]! = [], take: Int, skip: Int! = 0): [Falcon!]
+  falcon(where: FalconWhereUniqueInput!): Falcon
+  falconsCount(where: FalconWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

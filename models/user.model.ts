@@ -28,6 +28,7 @@ export const User = list({
         update: isAdmin,
       },
     }),
+    falcons: relationship({ref: "Falcon.owner"}),
     breedingProjects: relationship({
       ref: "BreedingProject.owner",
       many: true,

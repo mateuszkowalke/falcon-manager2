@@ -13,7 +13,7 @@ export const BreedingProject = list({
     aviaries: relationship({ ref: "Aviary.breedingProject" }),
     owner: relationship({
       ref: "User.breedingProjects",
-      ui: { hideCreate: true },
+      ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
       many: false,
     }),
     createdAt: timestamp({

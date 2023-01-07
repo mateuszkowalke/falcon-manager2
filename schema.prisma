@@ -19,6 +19,7 @@ model User {
   email            String            @unique @default("")
   password         String
   isAdmin          Boolean           @default(false)
+  falcons          Falcon?           @relation("Falcon_owner")
   breedingProjects BreedingProject[] @relation("BreedingProject_owner")
   addresses        Address[]         @relation("Address_owner")
   aviaries         Aviary[]          @relation("Aviary_owner")
@@ -43,7 +44,9 @@ model BreedingProject {
 model Aviary {
   id                String           @id @default(cuid())
   name              String           @default("")
-  capacity          Int
+  capacity          Int              @default(0)
+  falcons           Falcon?          @relation("Aviary_falcons", fields: [falconsId], references: [id])
+  falconsId         String?          @unique @map("falcons")
   lastCleaned       DateTime?
   breedingProject   BreedingProject? @relation("Aviary_breedingProject", fields: [breedingProjectId], references: [id])
   breedingProjectId String?          @unique @map("breedingProject")
@@ -70,4 +73,31 @@ model Address {
   updatedAt         DateTime?        @default(now())
 
   @@index([ownerId])
+}
+
+model Falcon {
+  id          String         @id @default(cuid())
+  name        String         @default("")
+  ring        String         @default("")
+  sex         FalconSexType? @default(UNKNOWN)
+  birthDate   DateTime?
+  source      String         @default("")
+  widthYoung  Int?
+  lengthYoung Int?
+  weightYoung Int?
+  widthOld    Int?
+  lengthOld   Int?
+  weightOld   Int?
+  notes       String         @default("")
+  aviary      Aviary?        @relation("Aviary_falcons")
+  owner       User?          @relation("Falcon_owner", fields: [ownerId], references: [id])
+  ownerId     String?        @unique @map("owner")
+  createdAt   DateTime?      @default(now())
+  updatedAt   DateTime?      @default(now())
+}
+
+enum FalconSexType {
+  UNKNOWN
+  MALE
+  FEMALE
 }

@@ -17,6 +17,7 @@ export const Aviary = list({
       validation: { isRequired: true, min: 0 },
       defaultValue: 0,
     }),
+    falcons: relationship({ ref: "Falcon.aviary" }),
     lastCleaned: timestamp(),
     breedingProject: relationship({
       ref: "BreedingProject.aviaries",
@@ -24,7 +25,7 @@ export const Aviary = list({
     }),
     owner: relationship({
       ref: "User.aviaries",
-      ui: { hideCreate: true },
+      ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
       many: false,
     }),
     createdAt: timestamp({
