@@ -6,12 +6,14 @@ import { Aviary } from "./models/aviary.model";
 import { Address } from "./models/address.model";
 import { Falcon } from "./models/falcon.model";
 import { Pair } from "./models/pair.model";
+import { Species } from "./models/species.model";
 
 export const lists: Lists = {
-    User,
-    BreedingProject,
-    Aviary,
-    Address,
-    Falcon,
-    Pair
+  User,
+  BreedingProject,
+  Aviary,
+  Address,
+  Falcon,
+  Pair,
+  Species,
 };

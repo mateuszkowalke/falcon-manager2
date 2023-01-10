@@ -505,6 +505,7 @@ type Falcon {
   id: ID!
   name: String
   ring: String
+  species: Species
   sex: FalconSexType
   birthDate: DateTime
   source: String
@@ -540,6 +541,7 @@ input FalconWhereInput {
   id: IDFilter
   name: StringFilter
   ring: StringFilter
+  species: SpeciesWhereInput
   sex: FalconSexTypeNullableFilter
   birthDate: DateTimeNullableFilter
   source: StringFilter
@@ -597,6 +599,7 @@ input FalconOrderByInput {
 input FalconUpdateInput {
   name: String
   ring: String
+  species: SpeciesRelateToOneForUpdateInput
   sex: FalconSexType
   birthDate: DateTime
   source: String
@@ -615,6 +618,12 @@ input FalconUpdateInput {
   updatedAt: DateTime
 }
 
+input SpeciesRelateToOneForUpdateInput {
+  create: SpeciesCreateInput
+  connect: SpeciesWhereUniqueInput
+  disconnect: Boolean
+}
+
 input PairRelateToOneForUpdateInput {
   create: PairCreateInput
   connect: PairWhereUniqueInput
@@ -629,6 +638,7 @@ input FalconUpdateArgs {
 input FalconCreateInput {
   name: String
   ring: String
+  species: SpeciesRelateToOneForCreateInput
   sex: FalconSexType
   birthDate: DateTime
   source: String
@@ -645,6 +655,11 @@ input FalconCreateInput {
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+input SpeciesRelateToOneForCreateInput {
+  create: SpeciesCreateInput
+  connect: SpeciesWhereUniqueInput
 }
 
 input PairRelateToOneForCreateInput {
@@ -747,6 +762,46 @@ input FalconRelateToManyForCreateInput {
   connect: [FalconWhereUniqueInput!]
 }
 
+type Species {
+  id: ID!
+  name: String
+  latin: String
+}
+
+input SpeciesWhereUniqueInput {
+  id: ID
+}
+
+input SpeciesWhereInput {
+  AND: [SpeciesWhereInput!]
+  OR: [SpeciesWhereInput!]
+  NOT: [SpeciesWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  latin: StringFilter
+}
+
+input SpeciesOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  latin: OrderDirection
+}
+
+input SpeciesUpdateInput {
+  name: String
+  latin: String
+}
+
+input SpeciesUpdateArgs {
+  where: SpeciesWhereUniqueInput!
+  data: SpeciesUpdateInput!
+}
+
+input SpeciesCreateInput {
+  name: String
+  latin: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -789,6 +844,12 @@ type Mutation {
   updatePairs(data: [PairUpdateArgs!]!): [Pair]
   deletePair(where: PairWhereUniqueInput!): Pair
   deletePairs(where: [PairWhereUniqueInput!]!): [Pair]
+  createSpecies(data: SpeciesCreateInput!): Species
+  createFalconSpecies(data: [SpeciesCreateInput!]!): [Species]
+  updateSpecies(where: SpeciesWhereUniqueInput!, data: SpeciesUpdateInput!): Species
+  updateFalconSpecies(data: [SpeciesUpdateArgs!]!): [Species]
+  deleteSpecies(where: SpeciesWhereUniqueInput!): Species
+  deleteFalconSpecies(where: [SpeciesWhereUniqueInput!]!): [Species]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -831,6 +892,9 @@ type Query {
   pairs(where: PairWhereInput! = {}, orderBy: [PairOrderByInput!]! = [], take: Int, skip: Int! = 0): [Pair!]
   pair(where: PairWhereUniqueInput!): Pair
   pairsCount(where: PairWhereInput! = {}): Int
+  falconSpecies(where: SpeciesWhereInput! = {}, orderBy: [SpeciesOrderByInput!]! = [], take: Int, skip: Int! = 0): [Species!]
+  species(where: SpeciesWhereUniqueInput!): Species
+  falconSpeciesCount(where: SpeciesWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

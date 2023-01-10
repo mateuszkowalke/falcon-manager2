@@ -21,6 +21,7 @@ export const Falcon = list({
   fields: {
     name: text({ validation: { isRequired: true } }),
     ring: text({ validation: { isRequired: true } }),
+    species: relationship({ ref: "Species", many: false }),
     sex: select({
       type: "enum",
       options: [
@@ -40,11 +41,11 @@ export const Falcon = list({
     weightOld: integer(),
     notes: text({ validation: { isRequired: true } }),
     inPair: relationship({
-        ref: "Pair",
-        many: false
+      ref: "Pair",
+      many: false,
     }),
     parentPair: relationship({
-        ref: "Pair.children"
+      ref: "Pair.children",
     }),
     aviary: relationship({
       ref: "Aviary.falcons",

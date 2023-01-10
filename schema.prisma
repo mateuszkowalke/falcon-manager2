@@ -80,6 +80,8 @@ model Falcon {
   id               String         @id @default(cuid())
   name             String         @default("")
   ring             String         @default("")
+  species          Species?       @relation("Falcon_species", fields: [speciesId], references: [id])
+  speciesId        String?        @map("species")
   sex              FalconSexType? @default(UNKNOWN)
   birthDate        DateTime?
   source           String         @default("")
@@ -102,6 +104,7 @@ model Falcon {
   from_Pair_male   Pair[]         @relation("Pair_male")
   from_Pair_female Pair[]         @relation("Pair_female")
 
+  @@index([speciesId])
   @@index([inPairId])
   @@index([parentPairId])
 }
@@ -126,6 +129,13 @@ model Pair {
   @@index([maleId])
   @@index([femaleId])
   @@index([ownerId])
+}
+
+model Species {
+  id                  String   @id @default(cuid())
+  name                String   @default("")
+  latin               String   @default("")
+  from_Falcon_species Falcon[] @relation("Falcon_species")
 }
 
 enum FalconSexType {

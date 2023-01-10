@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core7 = require("@keystone-6/core");
+var import_core8 = require("@keystone-6/core");
 
 // models/user.model.ts
 var import_core = require("@keystone-6/core");
@@ -43,9 +43,9 @@ function isAdmin({ session: session2 }) {
 }
 function allowAdminAndCurrentUser({
   session: session2,
-  list: list7
+  list: list8
 }) {
-  return session2?.data.isAdmin ? true : list7 === "User" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
+  return session2?.data.isAdmin ? true : list8 === "User" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
 }
 function attachSessionUser({ operation, context, resolvedData }) {
   if (operation === "create") {
@@ -237,6 +237,7 @@ var Falcon = (0, import_core5.list)({
   fields: {
     name: (0, import_fields5.text)({ validation: { isRequired: true } }),
     ring: (0, import_fields5.text)({ validation: { isRequired: true } }),
+    species: (0, import_fields5.relationship)({ ref: "Species", many: false }),
     sex: (0, import_fields5.select)({
       type: "enum",
       options: [
@@ -324,6 +325,20 @@ var Pair = (0, import_core6.list)({
   }
 });
 
+// models/species.model.ts
+var import_core7 = require("@keystone-6/core");
+var import_fields7 = require("@keystone-6/core/fields");
+var Species = (0, import_core7.list)({
+  access: defaultAccess,
+  fields: {
+    name: (0, import_fields7.text)({ validation: { isRequired: true } }),
+    latin: (0, import_fields7.text)({ validation: { isRequired: true } })
+  },
+  graphql: {
+    plural: "FalconSpecies"
+  }
+});
+
 // schema.ts
 var lists = {
   User,
@@ -331,12 +346,13 @@ var lists = {
   Aviary,
   Address,
   Falcon,
-  Pair
+  Pair,
+  Species
 };
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core7.config)({
+  (0, import_core8.config)({
     db: {
       provider: "postgresql",
       url: process.env.DATABASE_URL || "postgresql://testuser:testpass@localhost:5432/falcon_manager"
