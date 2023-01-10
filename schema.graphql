@@ -15,6 +15,8 @@ type User {
   addressesCount(where: AddressWhereInput! = {}): Int
   aviaries(where: AviaryWhereInput! = {}, orderBy: [AviaryOrderByInput!]! = [], take: Int, skip: Int! = 0): [Aviary!]
   aviariesCount(where: AviaryWhereInput! = {}): Int
+  pairs(where: PairWhereInput! = {}, orderBy: [PairOrderByInput!]! = [], take: Int, skip: Int! = 0): [Pair!]
+  pairsCount(where: PairWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -43,6 +45,7 @@ input UserWhereInput {
   breedingProjects: BreedingProjectManyRelationFilter
   addresses: AddressManyRelationFilter
   aviaries: AviaryManyRelationFilter
+  pairs: PairManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
 }
@@ -115,6 +118,12 @@ input AviaryManyRelationFilter {
   none: AviaryWhereInput
 }
 
+input PairManyRelationFilter {
+  every: PairWhereInput
+  some: PairWhereInput
+  none: PairWhereInput
+}
+
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -151,6 +160,7 @@ input UserUpdateInput {
   breedingProjects: BreedingProjectRelateToManyForUpdateInput
   addresses: AddressRelateToManyForUpdateInput
   aviaries: AviaryRelateToManyForUpdateInput
+  pairs: PairRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -182,6 +192,13 @@ input AviaryRelateToManyForUpdateInput {
   connect: [AviaryWhereUniqueInput!]
 }
 
+input PairRelateToManyForUpdateInput {
+  disconnect: [PairWhereUniqueInput!]
+  set: [PairWhereUniqueInput!]
+  create: [PairCreateInput!]
+  connect: [PairWhereUniqueInput!]
+}
+
 input UserUpdateArgs {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
@@ -197,6 +214,7 @@ input UserCreateInput {
   breedingProjects: BreedingProjectRelateToManyForCreateInput
   addresses: AddressRelateToManyForCreateInput
   aviaries: AviaryRelateToManyForCreateInput
+  pairs: PairRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -219,6 +237,11 @@ input AddressRelateToManyForCreateInput {
 input AviaryRelateToManyForCreateInput {
   create: [AviaryCreateInput!]
   connect: [AviaryWhereUniqueInput!]
+}
+
+input PairRelateToManyForCreateInput {
+  create: [PairCreateInput!]
+  connect: [PairWhereUniqueInput!]
 }
 
 type BreedingProject {
@@ -492,6 +515,8 @@ type Falcon {
   lengthOld: Int
   weightOld: Int
   notes: String
+  inPair: Pair
+  parentPair: Pair
   aviary: Aviary
   owner: User
   createdAt: DateTime
@@ -525,6 +550,8 @@ input FalconWhereInput {
   lengthOld: IntNullableFilter
   weightOld: IntNullableFilter
   notes: StringFilter
+  inPair: PairWhereInput
+  parentPair: PairWhereInput
   aviary: AviaryWhereInput
   owner: UserWhereInput
   createdAt: DateTimeNullableFilter
@@ -580,10 +607,18 @@ input FalconUpdateInput {
   lengthOld: Int
   weightOld: Int
   notes: String
+  inPair: PairRelateToOneForUpdateInput
+  parentPair: PairRelateToOneForUpdateInput
   aviary: AviaryRelateToOneForUpdateInput
   owner: UserRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+input PairRelateToOneForUpdateInput {
+  create: PairCreateInput
+  connect: PairWhereUniqueInput
+  disconnect: Boolean
 }
 
 input FalconUpdateArgs {
@@ -604,10 +639,112 @@ input FalconCreateInput {
   lengthOld: Int
   weightOld: Int
   notes: String
+  inPair: PairRelateToOneForCreateInput
+  parentPair: PairRelateToOneForCreateInput
   aviary: AviaryRelateToOneForCreateInput
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+input PairRelateToOneForCreateInput {
+  create: PairCreateInput
+  connect: PairWhereUniqueInput
+}
+
+type Pair {
+  id: ID!
+  name: String
+  notes: String
+  male: Falcon
+  female: Falcon
+  children(where: FalconWhereInput! = {}, orderBy: [FalconOrderByInput!]! = [], take: Int, skip: Int! = 0): [Falcon!]
+  childrenCount(where: FalconWhereInput! = {}): Int
+  owner: User
+  putTogether: DateTime
+  split: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input PairWhereUniqueInput {
+  id: ID
+}
+
+input PairWhereInput {
+  AND: [PairWhereInput!]
+  OR: [PairWhereInput!]
+  NOT: [PairWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  notes: StringFilter
+  male: FalconWhereInput
+  female: FalconWhereInput
+  children: FalconManyRelationFilter
+  owner: UserWhereInput
+  putTogether: DateTimeNullableFilter
+  split: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input FalconManyRelationFilter {
+  every: FalconWhereInput
+  some: FalconWhereInput
+  none: FalconWhereInput
+}
+
+input PairOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  notes: OrderDirection
+  putTogether: OrderDirection
+  split: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input PairUpdateInput {
+  name: String
+  notes: String
+  male: FalconRelateToOneForUpdateInput
+  female: FalconRelateToOneForUpdateInput
+  children: FalconRelateToManyForUpdateInput
+  owner: UserRelateToOneForUpdateInput
+  putTogether: DateTime
+  split: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input FalconRelateToManyForUpdateInput {
+  disconnect: [FalconWhereUniqueInput!]
+  set: [FalconWhereUniqueInput!]
+  create: [FalconCreateInput!]
+  connect: [FalconWhereUniqueInput!]
+}
+
+input PairUpdateArgs {
+  where: PairWhereUniqueInput!
+  data: PairUpdateInput!
+}
+
+input PairCreateInput {
+  name: String
+  notes: String
+  male: FalconRelateToOneForCreateInput
+  female: FalconRelateToOneForCreateInput
+  children: FalconRelateToManyForCreateInput
+  owner: UserRelateToOneForCreateInput
+  putTogether: DateTime
+  split: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input FalconRelateToManyForCreateInput {
+  create: [FalconCreateInput!]
+  connect: [FalconWhereUniqueInput!]
 }
 
 """
@@ -646,6 +783,12 @@ type Mutation {
   updateFalcons(data: [FalconUpdateArgs!]!): [Falcon]
   deleteFalcon(where: FalconWhereUniqueInput!): Falcon
   deleteFalcons(where: [FalconWhereUniqueInput!]!): [Falcon]
+  createPair(data: PairCreateInput!): Pair
+  createPairs(data: [PairCreateInput!]!): [Pair]
+  updatePair(where: PairWhereUniqueInput!, data: PairUpdateInput!): Pair
+  updatePairs(data: [PairUpdateArgs!]!): [Pair]
+  deletePair(where: PairWhereUniqueInput!): Pair
+  deletePairs(where: [PairWhereUniqueInput!]!): [Pair]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -685,6 +828,9 @@ type Query {
   falcons(where: FalconWhereInput! = {}, orderBy: [FalconOrderByInput!]! = [], take: Int, skip: Int! = 0): [Falcon!]
   falcon(where: FalconWhereUniqueInput!): Falcon
   falconsCount(where: FalconWhereInput! = {}): Int
+  pairs(where: PairWhereInput! = {}, orderBy: [PairOrderByInput!]! = [], take: Int, skip: Int! = 0): [Pair!]
+  pair(where: PairWhereUniqueInput!): Pair
+  pairsCount(where: PairWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

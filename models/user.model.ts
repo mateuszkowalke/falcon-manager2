@@ -41,6 +41,10 @@ export const User = list({
       ref: "Aviary.owner",
       many: true,
     }),
+    pairs: relationship({
+      ref: "Pair.owner",
+      many: true,
+    }),
     createdAt: timestamp({
       defaultValue: { kind: "now" },
     }),

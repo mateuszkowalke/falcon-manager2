@@ -23,6 +23,7 @@ model User {
   breedingProjects BreedingProject[] @relation("BreedingProject_owner")
   addresses        Address[]         @relation("Address_owner")
   aviaries         Aviary[]          @relation("Aviary_owner")
+  pairs            Pair[]            @relation("Pair_owner")
   createdAt        DateTime?         @default(now())
   updatedAt        DateTime?         @default(now())
 }
@@ -76,24 +77,55 @@ model Address {
 }
 
 model Falcon {
-  id          String         @id @default(cuid())
-  name        String         @default("")
-  ring        String         @default("")
-  sex         FalconSexType? @default(UNKNOWN)
-  birthDate   DateTime?
-  source      String         @default("")
-  widthYoung  Int?
-  lengthYoung Int?
-  weightYoung Int?
-  widthOld    Int?
-  lengthOld   Int?
-  weightOld   Int?
-  notes       String         @default("")
-  aviary      Aviary?        @relation("Aviary_falcons")
-  owner       User?          @relation("Falcon_owner", fields: [ownerId], references: [id])
-  ownerId     String?        @unique @map("owner")
-  createdAt   DateTime?      @default(now())
-  updatedAt   DateTime?      @default(now())
+  id               String         @id @default(cuid())
+  name             String         @default("")
+  ring             String         @default("")
+  sex              FalconSexType? @default(UNKNOWN)
+  birthDate        DateTime?
+  source           String         @default("")
+  widthYoung       Int?
+  lengthYoung      Int?
+  weightYoung      Int?
+  widthOld         Int?
+  lengthOld        Int?
+  weightOld        Int?
+  notes            String         @default("")
+  inPair           Pair?          @relation("Falcon_inPair", fields: [inPairId], references: [id])
+  inPairId         String?        @map("inPair")
+  parentPair       Pair?          @relation("Falcon_parentPair", fields: [parentPairId], references: [id])
+  parentPairId     String?        @map("parentPair")
+  aviary           Aviary?        @relation("Aviary_falcons")
+  owner            User?          @relation("Falcon_owner", fields: [ownerId], references: [id])
+  ownerId          String?        @unique @map("owner")
+  createdAt        DateTime?      @default(now())
+  updatedAt        DateTime?      @default(now())
+  from_Pair_male   Pair[]         @relation("Pair_male")
+  from_Pair_female Pair[]         @relation("Pair_female")
+
+  @@index([inPairId])
+  @@index([parentPairId])
+}
+
+model Pair {
+  id                 String    @id @default(cuid())
+  name               String    @default("")
+  notes              String    @default("")
+  male               Falcon?   @relation("Pair_male", fields: [maleId], references: [id])
+  maleId             String?   @map("male")
+  female             Falcon?   @relation("Pair_female", fields: [femaleId], references: [id])
+  femaleId           String?   @map("female")
+  children           Falcon[]  @relation("Falcon_parentPair")
+  owner              User?     @relation("Pair_owner", fields: [ownerId], references: [id])
+  ownerId            String?   @map("owner")
+  putTogether        DateTime? @default(now())
+  split              DateTime?
+  createdAt          DateTime? @default(now())
+  updatedAt          DateTime? @default(now())
+  from_Falcon_inPair Falcon[]  @relation("Falcon_inPair")
+
+  @@index([maleId])
+  @@index([femaleId])
+  @@index([ownerId])
 }
 
 enum FalconSexType {

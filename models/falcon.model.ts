@@ -39,6 +39,13 @@ export const Falcon = list({
     lengthOld: integer(),
     weightOld: integer(),
     notes: text({ validation: { isRequired: true } }),
+    inPair: relationship({
+        ref: "Pair",
+        many: false
+    }),
+    parentPair: relationship({
+        ref: "Pair.children"
+    }),
     aviary: relationship({
       ref: "Aviary.falcons",
       many: false,

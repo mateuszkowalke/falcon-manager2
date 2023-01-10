@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core6 = require("@keystone-6/core");
+var import_core7 = require("@keystone-6/core");
 
 // models/user.model.ts
 var import_core = require("@keystone-6/core");
@@ -43,9 +43,9 @@ function isAdmin({ session: session2 }) {
 }
 function allowAdminAndCurrentUser({
   session: session2,
-  list: list6
+  list: list7
 }) {
-  return session2?.data.isAdmin ? true : list6 === "User" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
+  return session2?.data.isAdmin ? true : list7 === "User" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
 }
 function attachSessionUser({ operation, context, resolvedData }) {
   if (operation === "create") {
@@ -118,6 +118,10 @@ var User = (0, import_core.list)({
     }),
     aviaries: (0, import_fields.relationship)({
       ref: "Aviary.owner",
+      many: true
+    }),
+    pairs: (0, import_fields.relationship)({
+      ref: "Pair.owner",
       many: true
     }),
     createdAt: (0, import_fields.timestamp)({
@@ -251,6 +255,13 @@ var Falcon = (0, import_core5.list)({
     lengthOld: (0, import_fields5.integer)(),
     weightOld: (0, import_fields5.integer)(),
     notes: (0, import_fields5.text)({ validation: { isRequired: true } }),
+    inPair: (0, import_fields5.relationship)({
+      ref: "Pair",
+      many: false
+    }),
+    parentPair: (0, import_fields5.relationship)({
+      ref: "Pair.children"
+    }),
     aviary: (0, import_fields5.relationship)({
       ref: "Aviary.falcons",
       many: false
@@ -272,18 +283,60 @@ var Falcon = (0, import_core5.list)({
   }
 });
 
+// models/pair.model.ts
+var import_core6 = require("@keystone-6/core");
+var import_fields6 = require("@keystone-6/core/fields");
+var Pair = (0, import_core6.list)({
+  access: defaultAccess,
+  fields: {
+    name: (0, import_fields6.text)({ validation: { isRequired: true } }),
+    notes: (0, import_fields6.text)(),
+    male: (0, import_fields6.relationship)({
+      ref: "Falcon",
+      many: false
+    }),
+    female: (0, import_fields6.relationship)({
+      ref: "Falcon",
+      many: false
+    }),
+    children: (0, import_fields6.relationship)({
+      ref: "Falcon.parentPair",
+      many: true
+    }),
+    owner: (0, import_fields6.relationship)({
+      ref: "User.pairs",
+      ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
+      many: false
+    }),
+    putTogether: (0, import_fields6.timestamp)({
+      defaultValue: { kind: "now" }
+    }),
+    split: (0, import_fields6.timestamp)(),
+    createdAt: (0, import_fields6.timestamp)({
+      defaultValue: { kind: "now" }
+    }),
+    updatedAt: (0, import_fields6.timestamp)({
+      defaultValue: { kind: "now" }
+    })
+  },
+  hooks: {
+    resolveInput: attachSessionUser
+  }
+});
+
 // schema.ts
 var lists = {
   User,
   BreedingProject,
   Aviary,
   Address,
-  Falcon
+  Falcon,
+  Pair
 };
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core6.config)({
+  (0, import_core7.config)({
     db: {
       provider: "postgresql",
       url: process.env.DATABASE_URL || "postgresql://testuser:testpass@localhost:5432/falcon_manager"
