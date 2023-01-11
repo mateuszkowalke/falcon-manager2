@@ -28,7 +28,7 @@ export const User = list({
         update: isAdmin,
       },
     }),
-    falcons: relationship({ref: "Falcon.owner"}),
+    falcons: relationship({ ref: "Falcon.owner" }),
     breedingProjects: relationship({
       ref: "BreedingProject.owner",
       many: true,
@@ -43,6 +43,14 @@ export const User = list({
     }),
     pairs: relationship({
       ref: "Pair.owner",
+      many: true,
+    }),
+    documents: relationship({
+      ref: "Document.owner",
+      many: true,
+    }),
+    offices: relationship({
+      ref: "Office.owner",
       many: true,
     }),
     createdAt: timestamp({

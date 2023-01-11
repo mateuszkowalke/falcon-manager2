@@ -1,19 +1,32 @@
 import { list } from "@keystone-6/core";
-import { text, relationship, timestamp } from "@keystone-6/core/fields";
+import {
+  text,
+  relationship,
+  timestamp,
+  integer,
+} from "@keystone-6/core/fields";
 
 import { defaultAccess, attachSessionUser } from "../auth/auth";
 
-export const BreedingProject = list({
+export const DocumentType = list({
   access: defaultAccess,
 
   fields: {
     name: text({ validation: { isRequired: true } }),
-    vetRegNo: text({ validation: { isRequired: true } }),
-    address: relationship({ ref: "Address.breedingProject" }),
-    aviaries: relationship({ ref: "Aviary.breedingProject" }),
-    offices: relationship({ ref: "Office.breedingProject" }),
+  },
+});
+
+export const Document = list({
+  access: defaultAccess,
+
+  fields: {
+    falcon: relationship({ ref: "Falcon" }),
+    documentType: relationship({ ref: "DocumentType" }),
+    documentNumber: text(),
+    scanFile: text(),
+    rawFile: text(),
     owner: relationship({
-      ref: "User.breedingProjects",
+      ref: "User.documents",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
       many: false,
     }),

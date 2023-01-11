@@ -7,6 +7,8 @@ import { Address } from "./models/address.model";
 import { Falcon } from "./models/falcon.model";
 import { Pair } from "./models/pair.model";
 import { Species } from "./models/species.model";
+import { Document, DocumentType } from "./models/document.model";
+import { Office, OfficeType } from "./models/office.model";
 
 export const lists: Lists = {
   User,
@@ -16,4 +18,8 @@ export const lists: Lists = {
   Falcon,
   Pair,
   Species,
+  Document,
+  DocumentType,
+  Office,
+  OfficeType
 };

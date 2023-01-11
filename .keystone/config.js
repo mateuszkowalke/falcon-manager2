@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core8 = require("@keystone-6/core");
+var import_core10 = require("@keystone-6/core");
 
 // models/user.model.ts
 var import_core = require("@keystone-6/core");
@@ -43,9 +43,9 @@ function isAdmin({ session: session2 }) {
 }
 function allowAdminAndCurrentUser({
   session: session2,
-  list: list8
+  list: list10
 }) {
-  return session2?.data.isAdmin ? true : list8 === "User" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
+  return session2?.data.isAdmin ? true : list10 === "User" ? { id: { equals: session2?.data.id } } : { owner: { id: { equals: session2?.data.id } } };
 }
 function attachSessionUser({ operation, context, resolvedData }) {
   if (operation === "create") {
@@ -124,6 +124,14 @@ var User = (0, import_core.list)({
       ref: "Pair.owner",
       many: true
     }),
+    documents: (0, import_fields.relationship)({
+      ref: "Document.owner",
+      many: true
+    }),
+    offices: (0, import_fields.relationship)({
+      ref: "Office.owner",
+      many: true
+    }),
     createdAt: (0, import_fields.timestamp)({
       defaultValue: { kind: "now" }
     }),
@@ -146,6 +154,7 @@ var BreedingProject = (0, import_core2.list)({
     vetRegNo: (0, import_fields2.text)({ validation: { isRequired: true } }),
     address: (0, import_fields2.relationship)({ ref: "Address.breedingProject" }),
     aviaries: (0, import_fields2.relationship)({ ref: "Aviary.breedingProject" }),
+    offices: (0, import_fields2.relationship)({ ref: "Office.breedingProject" }),
     owner: (0, import_fields2.relationship)({
       ref: "User.breedingProjects",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
@@ -339,6 +348,75 @@ var Species = (0, import_core7.list)({
   }
 });
 
+// models/document.model.ts
+var import_core8 = require("@keystone-6/core");
+var import_fields8 = require("@keystone-6/core/fields");
+var DocumentType = (0, import_core8.list)({
+  access: defaultAccess,
+  fields: {
+    name: (0, import_fields8.text)({ validation: { isRequired: true } })
+  }
+});
+var Document = (0, import_core8.list)({
+  access: defaultAccess,
+  fields: {
+    falcon: (0, import_fields8.relationship)({ ref: "Falcon" }),
+    documentType: (0, import_fields8.relationship)({ ref: "DocumentType" }),
+    documentNumber: (0, import_fields8.text)(),
+    scanFile: (0, import_fields8.text)(),
+    rawFile: (0, import_fields8.text)(),
+    owner: (0, import_fields8.relationship)({
+      ref: "User.documents",
+      ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
+      many: false
+    }),
+    createdAt: (0, import_fields8.timestamp)({
+      defaultValue: { kind: "now" }
+    }),
+    updatedAt: (0, import_fields8.timestamp)({
+      defaultValue: { kind: "now" }
+    })
+  },
+  hooks: {
+    resolveInput: attachSessionUser
+  }
+});
+
+// models/office.model.ts
+var import_core9 = require("@keystone-6/core");
+var import_fields9 = require("@keystone-6/core/fields");
+var OfficeType = (0, import_core9.list)({
+  access: defaultAccess,
+  fields: {
+    name: (0, import_fields9.text)({ validation: { isRequired: true } })
+  }
+});
+var Office = (0, import_core9.list)({
+  access: defaultAccess,
+  fields: {
+    officeType: (0, import_fields9.relationship)({ ref: "OfficeType" }),
+    name: (0, import_fields9.text)(),
+    breedingProject: (0, import_fields9.relationship)({
+      ref: "BreedingProject.offices",
+      many: false
+    }),
+    owner: (0, import_fields9.relationship)({
+      ref: "User.offices",
+      ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
+      many: false
+    }),
+    createdAt: (0, import_fields9.timestamp)({
+      defaultValue: { kind: "now" }
+    }),
+    updatedAt: (0, import_fields9.timestamp)({
+      defaultValue: { kind: "now" }
+    })
+  },
+  hooks: {
+    resolveInput: attachSessionUser
+  }
+});
+
 // schema.ts
 var lists = {
   User,
@@ -347,12 +425,16 @@ var lists = {
   Address,
   Falcon,
   Pair,
-  Species
+  Species,
+  Document,
+  DocumentType,
+  Office,
+  OfficeType
 };
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core8.config)({
+  (0, import_core10.config)({
     db: {
       provider: "postgresql",
       url: process.env.DATABASE_URL || "postgresql://testuser:testpass@localhost:5432/falcon_manager"

@@ -17,6 +17,10 @@ type User {
   aviariesCount(where: AviaryWhereInput! = {}): Int
   pairs(where: PairWhereInput! = {}, orderBy: [PairOrderByInput!]! = [], take: Int, skip: Int! = 0): [Pair!]
   pairsCount(where: PairWhereInput! = {}): Int
+  documents(where: DocumentWhereInput! = {}, orderBy: [DocumentOrderByInput!]! = [], take: Int, skip: Int! = 0): [Document!]
+  documentsCount(where: DocumentWhereInput! = {}): Int
+  offices(where: OfficeWhereInput! = {}, orderBy: [OfficeOrderByInput!]! = [], take: Int, skip: Int! = 0): [Office!]
+  officesCount(where: OfficeWhereInput! = {}): Int
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -46,6 +50,8 @@ input UserWhereInput {
   addresses: AddressManyRelationFilter
   aviaries: AviaryManyRelationFilter
   pairs: PairManyRelationFilter
+  documents: DocumentManyRelationFilter
+  offices: OfficeManyRelationFilter
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
 }
@@ -124,6 +130,18 @@ input PairManyRelationFilter {
   none: PairWhereInput
 }
 
+input DocumentManyRelationFilter {
+  every: DocumentWhereInput
+  some: DocumentWhereInput
+  none: DocumentWhereInput
+}
+
+input OfficeManyRelationFilter {
+  every: OfficeWhereInput
+  some: OfficeWhereInput
+  none: OfficeWhereInput
+}
+
 input DateTimeNullableFilter {
   equals: DateTime
   in: [DateTime!]
@@ -161,6 +179,8 @@ input UserUpdateInput {
   addresses: AddressRelateToManyForUpdateInput
   aviaries: AviaryRelateToManyForUpdateInput
   pairs: PairRelateToManyForUpdateInput
+  documents: DocumentRelateToManyForUpdateInput
+  offices: OfficeRelateToManyForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -199,6 +219,20 @@ input PairRelateToManyForUpdateInput {
   connect: [PairWhereUniqueInput!]
 }
 
+input DocumentRelateToManyForUpdateInput {
+  disconnect: [DocumentWhereUniqueInput!]
+  set: [DocumentWhereUniqueInput!]
+  create: [DocumentCreateInput!]
+  connect: [DocumentWhereUniqueInput!]
+}
+
+input OfficeRelateToManyForUpdateInput {
+  disconnect: [OfficeWhereUniqueInput!]
+  set: [OfficeWhereUniqueInput!]
+  create: [OfficeCreateInput!]
+  connect: [OfficeWhereUniqueInput!]
+}
+
 input UserUpdateArgs {
   where: UserWhereUniqueInput!
   data: UserUpdateInput!
@@ -215,6 +249,8 @@ input UserCreateInput {
   addresses: AddressRelateToManyForCreateInput
   aviaries: AviaryRelateToManyForCreateInput
   pairs: PairRelateToManyForCreateInput
+  documents: DocumentRelateToManyForCreateInput
+  offices: OfficeRelateToManyForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -244,12 +280,23 @@ input PairRelateToManyForCreateInput {
   connect: [PairWhereUniqueInput!]
 }
 
+input DocumentRelateToManyForCreateInput {
+  create: [DocumentCreateInput!]
+  connect: [DocumentWhereUniqueInput!]
+}
+
+input OfficeRelateToManyForCreateInput {
+  create: [OfficeCreateInput!]
+  connect: [OfficeWhereUniqueInput!]
+}
+
 type BreedingProject {
   id: ID!
   name: String
   vetRegNo: String
   address: Address
   aviaries: Aviary
+  offices: Office
   owner: User
   createdAt: DateTime
   updatedAt: DateTime
@@ -268,6 +315,7 @@ input BreedingProjectWhereInput {
   vetRegNo: StringFilter
   address: AddressWhereInput
   aviaries: AviaryWhereInput
+  offices: OfficeWhereInput
   owner: UserWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -286,6 +334,7 @@ input BreedingProjectUpdateInput {
   vetRegNo: String
   address: AddressRelateToOneForUpdateInput
   aviaries: AviaryRelateToOneForUpdateInput
+  offices: OfficeRelateToOneForUpdateInput
   owner: UserRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -300,6 +349,12 @@ input AddressRelateToOneForUpdateInput {
 input AviaryRelateToOneForUpdateInput {
   create: AviaryCreateInput
   connect: AviaryWhereUniqueInput
+  disconnect: Boolean
+}
+
+input OfficeRelateToOneForUpdateInput {
+  create: OfficeCreateInput
+  connect: OfficeWhereUniqueInput
   disconnect: Boolean
 }
 
@@ -319,6 +374,7 @@ input BreedingProjectCreateInput {
   vetRegNo: String
   address: AddressRelateToOneForCreateInput
   aviaries: AviaryRelateToOneForCreateInput
+  offices: OfficeRelateToOneForCreateInput
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -332,6 +388,11 @@ input AddressRelateToOneForCreateInput {
 input AviaryRelateToOneForCreateInput {
   create: AviaryCreateInput
   connect: AviaryWhereUniqueInput
+}
+
+input OfficeRelateToOneForCreateInput {
+  create: OfficeCreateInput
+  connect: OfficeWhereUniqueInput
 }
 
 input UserRelateToOneForCreateInput {
@@ -802,6 +863,222 @@ input SpeciesCreateInput {
   latin: String
 }
 
+type Document {
+  id: ID!
+  falcon: Falcon
+  documentType: DocumentType
+  documentNumber: String
+  scanFile: String
+  rawFile: String
+  owner: User
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input DocumentWhereUniqueInput {
+  id: ID
+}
+
+input DocumentWhereInput {
+  AND: [DocumentWhereInput!]
+  OR: [DocumentWhereInput!]
+  NOT: [DocumentWhereInput!]
+  id: IDFilter
+  falcon: FalconWhereInput
+  documentType: DocumentTypeWhereInput
+  documentNumber: StringFilter
+  scanFile: StringFilter
+  rawFile: StringFilter
+  owner: UserWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input DocumentOrderByInput {
+  id: OrderDirection
+  documentNumber: OrderDirection
+  scanFile: OrderDirection
+  rawFile: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input DocumentUpdateInput {
+  falcon: FalconRelateToOneForUpdateInput
+  documentType: DocumentTypeRelateToOneForUpdateInput
+  documentNumber: String
+  scanFile: String
+  rawFile: String
+  owner: UserRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input DocumentTypeRelateToOneForUpdateInput {
+  create: DocumentTypeCreateInput
+  connect: DocumentTypeWhereUniqueInput
+  disconnect: Boolean
+}
+
+input DocumentUpdateArgs {
+  where: DocumentWhereUniqueInput!
+  data: DocumentUpdateInput!
+}
+
+input DocumentCreateInput {
+  falcon: FalconRelateToOneForCreateInput
+  documentType: DocumentTypeRelateToOneForCreateInput
+  documentNumber: String
+  scanFile: String
+  rawFile: String
+  owner: UserRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input DocumentTypeRelateToOneForCreateInput {
+  create: DocumentTypeCreateInput
+  connect: DocumentTypeWhereUniqueInput
+}
+
+type DocumentType {
+  id: ID!
+  name: String
+}
+
+input DocumentTypeWhereUniqueInput {
+  id: ID
+}
+
+input DocumentTypeWhereInput {
+  AND: [DocumentTypeWhereInput!]
+  OR: [DocumentTypeWhereInput!]
+  NOT: [DocumentTypeWhereInput!]
+  id: IDFilter
+  name: StringFilter
+}
+
+input DocumentTypeOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input DocumentTypeUpdateInput {
+  name: String
+}
+
+input DocumentTypeUpdateArgs {
+  where: DocumentTypeWhereUniqueInput!
+  data: DocumentTypeUpdateInput!
+}
+
+input DocumentTypeCreateInput {
+  name: String
+}
+
+type Office {
+  id: ID!
+  officeType: OfficeType
+  name: String
+  breedingProject: BreedingProject
+  owner: User
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input OfficeWhereUniqueInput {
+  id: ID
+}
+
+input OfficeWhereInput {
+  AND: [OfficeWhereInput!]
+  OR: [OfficeWhereInput!]
+  NOT: [OfficeWhereInput!]
+  id: IDFilter
+  officeType: OfficeTypeWhereInput
+  name: StringFilter
+  breedingProject: BreedingProjectWhereInput
+  owner: UserWhereInput
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input OfficeOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input OfficeUpdateInput {
+  officeType: OfficeTypeRelateToOneForUpdateInput
+  name: String
+  breedingProject: BreedingProjectRelateToOneForUpdateInput
+  owner: UserRelateToOneForUpdateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input OfficeTypeRelateToOneForUpdateInput {
+  create: OfficeTypeCreateInput
+  connect: OfficeTypeWhereUniqueInput
+  disconnect: Boolean
+}
+
+input OfficeUpdateArgs {
+  where: OfficeWhereUniqueInput!
+  data: OfficeUpdateInput!
+}
+
+input OfficeCreateInput {
+  officeType: OfficeTypeRelateToOneForCreateInput
+  name: String
+  breedingProject: BreedingProjectRelateToOneForCreateInput
+  owner: UserRelateToOneForCreateInput
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input OfficeTypeRelateToOneForCreateInput {
+  create: OfficeTypeCreateInput
+  connect: OfficeTypeWhereUniqueInput
+}
+
+type OfficeType {
+  id: ID!
+  name: String
+}
+
+input OfficeTypeWhereUniqueInput {
+  id: ID
+}
+
+input OfficeTypeWhereInput {
+  AND: [OfficeTypeWhereInput!]
+  OR: [OfficeTypeWhereInput!]
+  NOT: [OfficeTypeWhereInput!]
+  id: IDFilter
+  name: StringFilter
+}
+
+input OfficeTypeOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+}
+
+input OfficeTypeUpdateInput {
+  name: String
+}
+
+input OfficeTypeUpdateArgs {
+  where: OfficeTypeWhereUniqueInput!
+  data: OfficeTypeUpdateInput!
+}
+
+input OfficeTypeCreateInput {
+  name: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -850,6 +1127,30 @@ type Mutation {
   updateFalconSpecies(data: [SpeciesUpdateArgs!]!): [Species]
   deleteSpecies(where: SpeciesWhereUniqueInput!): Species
   deleteFalconSpecies(where: [SpeciesWhereUniqueInput!]!): [Species]
+  createDocument(data: DocumentCreateInput!): Document
+  createDocuments(data: [DocumentCreateInput!]!): [Document]
+  updateDocument(where: DocumentWhereUniqueInput!, data: DocumentUpdateInput!): Document
+  updateDocuments(data: [DocumentUpdateArgs!]!): [Document]
+  deleteDocument(where: DocumentWhereUniqueInput!): Document
+  deleteDocuments(where: [DocumentWhereUniqueInput!]!): [Document]
+  createDocumentType(data: DocumentTypeCreateInput!): DocumentType
+  createDocumentTypes(data: [DocumentTypeCreateInput!]!): [DocumentType]
+  updateDocumentType(where: DocumentTypeWhereUniqueInput!, data: DocumentTypeUpdateInput!): DocumentType
+  updateDocumentTypes(data: [DocumentTypeUpdateArgs!]!): [DocumentType]
+  deleteDocumentType(where: DocumentTypeWhereUniqueInput!): DocumentType
+  deleteDocumentTypes(where: [DocumentTypeWhereUniqueInput!]!): [DocumentType]
+  createOffice(data: OfficeCreateInput!): Office
+  createOffices(data: [OfficeCreateInput!]!): [Office]
+  updateOffice(where: OfficeWhereUniqueInput!, data: OfficeUpdateInput!): Office
+  updateOffices(data: [OfficeUpdateArgs!]!): [Office]
+  deleteOffice(where: OfficeWhereUniqueInput!): Office
+  deleteOffices(where: [OfficeWhereUniqueInput!]!): [Office]
+  createOfficeType(data: OfficeTypeCreateInput!): OfficeType
+  createOfficeTypes(data: [OfficeTypeCreateInput!]!): [OfficeType]
+  updateOfficeType(where: OfficeTypeWhereUniqueInput!, data: OfficeTypeUpdateInput!): OfficeType
+  updateOfficeTypes(data: [OfficeTypeUpdateArgs!]!): [OfficeType]
+  deleteOfficeType(where: OfficeTypeWhereUniqueInput!): OfficeType
+  deleteOfficeTypes(where: [OfficeTypeWhereUniqueInput!]!): [OfficeType]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -895,6 +1196,18 @@ type Query {
   falconSpecies(where: SpeciesWhereInput! = {}, orderBy: [SpeciesOrderByInput!]! = [], take: Int, skip: Int! = 0): [Species!]
   species(where: SpeciesWhereUniqueInput!): Species
   falconSpeciesCount(where: SpeciesWhereInput! = {}): Int
+  documents(where: DocumentWhereInput! = {}, orderBy: [DocumentOrderByInput!]! = [], take: Int, skip: Int! = 0): [Document!]
+  document(where: DocumentWhereUniqueInput!): Document
+  documentsCount(where: DocumentWhereInput! = {}): Int
+  documentTypes(where: DocumentTypeWhereInput! = {}, orderBy: [DocumentTypeOrderByInput!]! = [], take: Int, skip: Int! = 0): [DocumentType!]
+  documentType(where: DocumentTypeWhereUniqueInput!): DocumentType
+  documentTypesCount(where: DocumentTypeWhereInput! = {}): Int
+  offices(where: OfficeWhereInput! = {}, orderBy: [OfficeOrderByInput!]! = [], take: Int, skip: Int! = 0): [Office!]
+  office(where: OfficeWhereUniqueInput!): Office
+  officesCount(where: OfficeWhereInput! = {}): Int
+  officeTypes(where: OfficeTypeWhereInput! = {}, orderBy: [OfficeTypeOrderByInput!]! = [], take: Int, skip: Int! = 0): [OfficeType!]
+  officeType(where: OfficeTypeWhereUniqueInput!): OfficeType
+  officeTypesCount(where: OfficeTypeWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
