@@ -5,6 +5,9 @@ on:
       - main
     tags:
       - '*'
+  create:
+    tags:
+      - v*
 jobs:
   publish-docker-images:
     runs-on: ubuntu-latest
