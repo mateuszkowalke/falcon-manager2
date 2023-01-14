@@ -21,4 +21,4 @@ FROM node:18-bullseye-slim
 RUN chown node:node ./
 USER node
 COPY --from=builder /usr/src/app ./
-CMD ["npm", "start"]
+CMD ["./prod_start.sh"]
