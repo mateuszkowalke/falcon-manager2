@@ -50,3 +50,11 @@ A walkthrough on how to do this is forthcoming, but in the meantime our [todo ex
 ### Embedding Keystone in a Next.js frontend
 
 While Keystone works as a standalone app, you can embed your Keystone app into a [Next.js](https://nextjs.org/) app. This is quite a different setup to the starter, and we recommend checking out our walkthrough for that [here](https://keystonejs.com/docs/walkthroughs/embedded-mode-with-sqlite-nextjs#how-to-embed-keystone-sq-lite-in-a-next-js-app).
+
+# CI
+
+To release tag commit with v0.0.0 style tag, then push it using `git push origin v.0.0.0`
+
+# Running using docker image
+
+docker run -d --name falcon-manager -e DATABASE_URL=postgresql://user:pass@pgdb:5432/falcon_manager --network=bridge --restart=always -p 3000:3000 mateuszkowalke/falcon-manager2:latest
