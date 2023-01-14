@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   keystone:
-    build: ./Dockerfile.dev
+    build: .
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
