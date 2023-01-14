@@ -5,13 +5,10 @@ on:
       - main
     tags:
       - '*'
-  create:
-    tags:
-      - v*
 jobs:
   publish-docker-images:
     runs-on: ubuntu-latest
-    if: GitHub.ref == 'refs/heads/main' || GitHub.event_name == 'release'
+    if: GitHub.ref == 'refs/heads/main' || GitHub.ref == 'refs/tags/v*' || GitHub.event_name == 'release'
     steps:
       - name: checkout
         uses: actions/checkout@v3
