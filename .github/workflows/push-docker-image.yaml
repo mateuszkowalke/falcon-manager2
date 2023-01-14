@@ -2,9 +2,9 @@ name: falcon-manager
 on:
   push:
     branches:
-      — 'main'
+      - main
     tags:
-      — '*'
+      - '*'
 jobs:
   publish-docker-images:
     runs-on: ubuntu-latest
