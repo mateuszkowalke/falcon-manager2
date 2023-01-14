@@ -1,5 +1,5 @@
 # Use NodeJS server for the app.
-FROM node:18 as builder
+FROM node:18 
 RUN npm install -g npm@latest
 # Copy files as a non-root user. The `node` user is built in the Node image.
 WORKDIR /usr/src/app
@@ -16,9 +16,4 @@ RUN npm run postinstall
 RUN npm run build
 # Execute NodeJS (not NPM script) to handle SIGTERM and SIGINT signals.
 # ^^ Can't do that for keystone as it has it's proprietary way of starting.
-
-FROM node:18-bullseye-slim
-RUN chown node:node ./
-USER node
-COPY --from=builder /usr/src/app ./
-CMD ["./prod_start.sh"]
+CMD ["npm", "run", "start"]
