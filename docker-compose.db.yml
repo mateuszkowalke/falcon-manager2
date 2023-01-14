@@ -1,18 +1,5 @@
 version: '3.9'
 services:
-  keystone:
-    build: .
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    command: npm run dev
-    ports:
-      - "3000:3000"
-    depends_on:
-      - pgdb
-    environment:
-      DATABASE_URL: postgresql://testuser:testpass@pgdb:5432/falcon_manager
-
   pgdb:
     image: 'postgres:14'
     volumes:
