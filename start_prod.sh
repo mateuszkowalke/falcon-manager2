@@ -1,4 +1,4 @@
 #!/bin/bash
 
-npm run deploy
+npm run migrate
 npm run start

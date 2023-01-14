@@ -437,7 +437,8 @@ var keystone_default = withAuth(
   (0, import_core10.config)({
     db: {
       provider: "postgresql",
-      url: process.env.DATABASE_URL || "postgresql://testuser:testpass@localhost:5432/falcon_manager"
+      url: process.env.DATABASE_URL || "postgresql://testuser:testpass@localhost:5432/falcon_manager",
+      useMigrations: true
     },
     lists,
     session

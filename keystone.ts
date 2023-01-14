@@ -11,6 +11,7 @@ export default withAuth(
       url:
         process.env.DATABASE_URL ||
         "postgresql://testuser:testpass@localhost:5432/falcon_manager",
+      useMigrations: true
     },
     lists,
     session,
