@@ -11,7 +11,12 @@ export default withAuth(
       url:
         process.env.DATABASE_URL ||
         "postgresql://testuser:testpass@localhost:5432/falcon_manager",
-      useMigrations: true
+      useMigrations: true,
+    },
+    server: {
+      extendExpressApp: (app, commonContext) => {
+        app.set("trust proxy", true);
+      },
     },
     lists,
     session,
