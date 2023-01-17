@@ -3,13 +3,12 @@ import {
   text,
   relationship,
   timestamp,
-  integer,
 } from "@keystone-6/core/fields";
 
-import { defaultAccess, attachSessionUser } from "../auth/auth";
+import { defaultAccess, attachSessionUser, sharedResourceAccess } from "../auth/auth";
 
 export const OfficeType = list({
-  access: defaultAccess,
+  access: sharedResourceAccess,
 
   fields: {
     name: text({ validation: { isRequired: true } }),

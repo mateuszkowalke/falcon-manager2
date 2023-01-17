@@ -73,6 +73,14 @@ var defaultAccess = {
     delete: allowAdminAndCurrentUser
   }
 };
+var sharedResourceAccess = {
+  operation: {
+    create: isAdmin,
+    query: import_access.allowAll,
+    update: isAdmin,
+    delete: isAdmin
+  }
+};
 var { withAuth } = (0, import_auth.createAuth)({
   listKey: "User",
   identityField: "email",
@@ -338,7 +346,7 @@ var Pair = (0, import_core6.list)({
 var import_core7 = require("@keystone-6/core");
 var import_fields7 = require("@keystone-6/core/fields");
 var Species = (0, import_core7.list)({
-  access: defaultAccess,
+  access: sharedResourceAccess,
   fields: {
     name: (0, import_fields7.text)({ validation: { isRequired: true } }),
     latin: (0, import_fields7.text)({ validation: { isRequired: true } })
@@ -352,7 +360,7 @@ var Species = (0, import_core7.list)({
 var import_core8 = require("@keystone-6/core");
 var import_fields8 = require("@keystone-6/core/fields");
 var DocumentType = (0, import_core8.list)({
-  access: defaultAccess,
+  access: sharedResourceAccess,
   fields: {
     name: (0, import_fields8.text)({ validation: { isRequired: true } })
   }
@@ -386,7 +394,7 @@ var Document = (0, import_core8.list)({
 var import_core9 = require("@keystone-6/core");
 var import_fields9 = require("@keystone-6/core/fields");
 var OfficeType = (0, import_core9.list)({
-  access: defaultAccess,
+  access: sharedResourceAccess,
   fields: {
     name: (0, import_fields9.text)({ validation: { isRequired: true } })
   }
@@ -439,6 +447,11 @@ var keystone_default = withAuth(
       provider: "postgresql",
       url: process.env.DATABASE_URL || "postgresql://testuser:testpass@localhost:5432/falcon_manager",
       useMigrations: true
+    },
+    server: {
+      extendExpressApp: (app, commonContext) => {
+        app.set("trust proxy", true);
+      }
     },
     lists,
     session

@@ -35,7 +35,7 @@ afterAll(async () => {
 });
 
 const context = getContext(config, PrismaModule);
-const prisma = context.prisma;
+const prisma: PrismaModule.PrismaClient = context.prisma;
 
 describe("Office", () => {
   describe("Creating office", () => {
@@ -69,12 +69,19 @@ describe("Office", () => {
         name: "office type name",
       };
 
+      const officeType = await prisma.officeType.create({
+        data: {
+          ...officeTypeData,
+        },
+      });
+
       const officeData = {
         officeType: {
-          create: { ...officeTypeData },
+          connect: { id: officeType.id},
         },
         name: "test office name",
       };
+
       const office = await context
         .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
         .query.Office.createOne({
@@ -88,7 +95,7 @@ describe("Office", () => {
       });
 
       // need to check in db as afterOperation hook doesn't change returned data
-      expect(officeFinal.ownerId).toBe(noAdmin.id);
+      expect(officeFinal?.ownerId).toBe(noAdmin.id);
     });
 
     it("Should create office with nested breeding project", async () => {
@@ -110,9 +117,15 @@ describe("Office", () => {
         name: "office type name",
       };
 
+      const officeType = await prisma.officeType.create({
+        data: {
+          ...officeTypeData,
+        },
+      });
+
       const officeData = {
         officeType: {
-          create: { ...officeTypeData },
+          connect: { id: officeType.id},
         },
         name: "test office name",
         breedingProject: {
@@ -133,8 +146,8 @@ describe("Office", () => {
       });
 
       // need to check in db as afterOperation hook doesn't change returned data
-      expect(officeFinal.ownerId).toBe(noAdmin.id);
-      expect(officeFinal.breedingProject.name).toBe(breedingProjectData.name);
+      expect(officeFinal?.ownerId).toBe(noAdmin.id);
+      expect(officeFinal?.breedingProject?.name).toBe(breedingProjectData.name);
     });
   });
 });

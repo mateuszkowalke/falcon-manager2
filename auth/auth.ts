@@ -76,6 +76,15 @@ export const defaultAccess = {
   },
 };
 
+export const sharedResourceAccess = {
+  operation: {
+    create: isAdmin,
+    query: allowAll,
+    update: isAdmin,
+    delete: isAdmin,
+  },
+};
+
 const { withAuth } = createAuth({
   listKey: "User",
   identityField: "email",

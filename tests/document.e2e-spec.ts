@@ -35,7 +35,7 @@ afterAll(async () => {
 });
 
 const context = getContext(config, PrismaModule);
-const prisma = context.prisma;
+const prisma: PrismaModule.PrismaClient = context.prisma;
 
 describe("Document", () => {
   describe("Creating document", () => {
@@ -69,13 +69,20 @@ describe("Document", () => {
         name: "document type name",
       };
 
+      const documentType = await prisma.documentType.create({
+        data: {
+          ...documentTypeData,
+        },
+      });
+
       const documentData = {
         documentType: {
-          create: { ...documentTypeData },
+          connect: { id: documentType.id },
         },
         scanFile: "scan file url",
         rawFile: "raw file url",
       };
+
       const document = await context
         .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
         .query.Document.createOne({
@@ -89,7 +96,7 @@ describe("Document", () => {
       });
 
       // need to check in db as afterOperation hook doesn't change returned data
-      expect(documentFinal.ownerId).toBe(noAdmin.id);
+      expect(documentFinal?.ownerId).toBe(noAdmin.id);
     });
 
     it("Should create document assigned to falcon", async () => {
@@ -112,12 +119,18 @@ describe("Document", () => {
         name: "document type name",
       };
 
+      const documentType = await prisma.documentType.create({
+        data: {
+          ...documentTypeData,
+        },
+      });
+
       const documentData = {
         falcon: {
           create: { ...falconData },
         },
         documentType: {
-          create: { ...documentTypeData },
+          connect: { id: documentType.id },
         },
         scanFile: "scan file url",
         rawFile: "raw file url",
@@ -136,8 +149,98 @@ describe("Document", () => {
       });
 
       // need to check in db as afterOperation hook doesn't change returned data
-      expect(documentFinal.ownerId).toBe(noAdmin.id);
-      expect(documentFinal.falcon.name).toBe(falconData.name);
+      expect(documentFinal?.ownerId).toBe(noAdmin.id);
+      expect(documentFinal?.falcon?.name).toBe(falconData.name);
+    });
+
+    it("Should create document type when session user is admin", async () => {
+      const documentTypeData = {
+        name: "document type name",
+      };
+
+      const documentType = await context
+        .withSession({ data: { id: admin.id, isAdmin: admin.isAdmin } })
+        .query.DocumentType.createOne({
+          data: {
+            ...documentTypeData,
+          },
+        });
+
+      const documentTypeFinal = await prisma.documentType.findUnique({
+        where: { id: documentType.id },
+      });
+
+      // need to check in db as afterOperation hook doesn't change returned data
+      expect(documentTypeFinal).toBeDefined();
+    });
+
+    it("Should not create document type when session user is not admin", async () => {
+      const documentTypeData = {
+        name: "document type name",
+      };
+
+      try {
+        await context
+          .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
+          .query.DocumentType.createOne({
+            data: {
+              ...documentTypeData,
+            },
+          });
+      } catch (err) {
+        expect(err).toBeDefined();
+        expect(err).toBeInstanceOf(Error);
+      }
+    });
+  });
+
+  describe("Querying documents", () => {
+    let admin: any;
+    let noAdmin: any;
+    beforeEach(async () => {
+      await resetDatabase(dbUrl, prismaSchemaPath);
+      admin = await prisma.user.create({
+        data: {
+          firstName: "admin",
+          lastName: "test",
+          email: "admin@falcon-manager.com",
+          password: "secret1234",
+          isAdmin: true,
+        },
+      });
+
+      noAdmin = await prisma.user.create({
+        data: {
+          firstName: "noAdmin",
+          lastName: "test",
+          email: "noAdmin@falcon-manager.com",
+          password: "secret1234",
+          isAdmin: false,
+        },
+      });
+    });
+
+    it("Should be able to query document types list for any user", async () => {
+      const documentTypeData1 = {
+        name: "document type name",
+      };
+
+      const documentTypeData2 = {
+        name: "document type name",
+      };
+
+      await prisma.documentType.createMany({
+        data: [{ ...documentTypeData1 }, { ...documentTypeData2 }],
+      });
+      const savedDocumentTypes = await prisma.documentType.findMany();
+
+      const documentTypes = await context
+        .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
+        .query.DocumentType.findMany();
+
+      expect(documentTypes.map((type) => type.id)).toStrictEqual(
+        savedDocumentTypes.map((type) => type.id)
+      );
     });
   });
 });

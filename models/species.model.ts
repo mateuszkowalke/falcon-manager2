@@ -1,10 +1,10 @@
 import { list } from "@keystone-6/core";
 import { text } from "@keystone-6/core/fields";
 
-import { defaultAccess } from "../auth/auth";
+import { sharedResourceAccess } from "../auth/auth";
 
 export const Species = list({
-  access: defaultAccess,
+  access: sharedResourceAccess,
 
   fields: {
     name: text({ validation: { isRequired: true } }),
