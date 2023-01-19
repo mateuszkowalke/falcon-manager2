@@ -12,8 +12,6 @@ ENV NODE_ENV $NODE_ENV
 COPY package*.json ./
 RUN npm ci --ignore-scripts && npm cache clean --force
 COPY --chown=node:node . .
-RUN npm run postinstall
-RUN npm run build
 # Execute NodeJS (not NPM script) to handle SIGTERM and SIGINT signals.
 # ^^ Can't do that for keystone as it has it's proprietary way of starting.
 CMD ["./start_prod.sh"]
