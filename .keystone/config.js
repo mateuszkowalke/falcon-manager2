@@ -371,8 +371,8 @@ var Document = (0, import_core8.list)({
     falcon: (0, import_fields8.relationship)({ ref: "Falcon" }),
     documentType: (0, import_fields8.relationship)({ ref: "DocumentType" }),
     documentNumber: (0, import_fields8.text)(),
-    scanFile: (0, import_fields8.text)(),
-    rawFile: (0, import_fields8.text)(),
+    scanFile: (0, import_fields8.file)({ storage: "documentsStorage" }),
+    rawFile: (0, import_fields8.file)({ storage: "documentsStorage" }),
     owner: (0, import_fields8.relationship)({
       ref: "User.documents",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
@@ -440,12 +440,107 @@ var lists = {
   OfficeType
 };
 
+// storage.ts
+function getStorageConfig(env) {
+  if (env.NODE_ENV === "development") {
+    return getLocalStorageConfig(env);
+  }
+  return getS3StorageConfig(env);
+}
+function getLocalStorageConfig(env) {
+  const localDocumentsStorage = {
+    kind: "local",
+    type: "file",
+    storagePath: "public/documents",
+    serverRoute: {
+      path: "documents"
+    },
+    generateUrl: (path) => `${env.ASSET_BASE_URL}/documents${path}`
+  };
+  const localImagesStorage = {
+    kind: "local",
+    type: "image",
+    storagePath: "public/images",
+    serverRoute: {
+      path: "images"
+    },
+    generateUrl: (path) => `${env.ASSET_BASE_URL}/images${path}`
+  };
+  return {
+    documentsStorage: {
+      ...localDocumentsStorage
+    },
+    imagesStorage: {
+      ...localImagesStorage
+    }
+  };
+}
+function getS3StorageConfig(env) {
+  const {
+    S3_BUCKET_NAME: bucketName,
+    S3_REGION: region,
+    S3_ACCESS_KEY_ID: accessKeyId,
+    S3_SECRET_ACCESS_KEY: secretAccessKey
+  } = env;
+  const s3DocumentsStorage = {
+    kind: "s3",
+    type: "file",
+    bucketName,
+    region,
+    accessKeyId,
+    secretAccessKey,
+    signed: { expiry: 5e3 }
+  };
+  const s3ImagesStorage = {
+    kind: "s3",
+    type: "image",
+    bucketName,
+    region,
+    accessKeyId,
+    secretAccessKey,
+    signed: { expiry: 5e3 }
+  };
+  return {
+    documentsStorage: {
+      ...s3DocumentsStorage
+    },
+    imagesStorage: {
+      ...s3ImagesStorage
+    }
+  };
+}
+
+// env.schema.ts
+var import_zod = require("zod");
+var prodEnv = import_zod.z.object({
+  NODE_ENV: import_zod.z.literal("production"),
+  DATABASE_URL: import_zod.z.string().min(1),
+  S3_BUCKET_NAME: import_zod.z.string().min(1),
+  S3_REGION: import_zod.z.string().min(1),
+  S3_ACCESS_KEY_ID: import_zod.z.string().min(1),
+  S3_SECRET_ACCESS_KEY: import_zod.z.string().min(1),
+  ASSET_BASE_URL: import_zod.z.string().min(1)
+});
+var devEnv = import_zod.z.object({
+  NODE_ENV: import_zod.z.literal("development"),
+  DATABASE_URL: import_zod.z.string().min(1),
+  ASSET_BASE_URL: import_zod.z.string().min(1)
+});
+var envSchema = import_zod.z.union([prodEnv, devEnv]);
+
 // keystone.ts
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = "postgresql://testuser:testpass@localhost:5432/falcon_manager";
+}
+if (!process.env.ASSET_BASE_URL) {
+  process.env.ASSET_BASE_URL = "http://localhost:3000";
+}
+var parsedEnv = envSchema.parse(process.env);
 var keystone_default = withAuth(
   (0, import_core10.config)({
     db: {
       provider: "postgresql",
-      url: process.env.DATABASE_URL || "postgresql://testuser:testpass@localhost:5432/falcon_manager",
+      url: parsedEnv.DATABASE_URL,
       useMigrations: true
     },
     server: {
@@ -454,6 +549,7 @@ var keystone_default = withAuth(
       }
     },
     lists,
-    session
+    session,
+    storage: getStorageConfig(parsedEnv)
   })
 );

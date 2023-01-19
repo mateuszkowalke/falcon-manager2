@@ -144,18 +144,20 @@ model Species {
 }
 
 model Document {
-  id             String        @id @default(cuid())
-  falcon         Falcon?       @relation("Document_falcon", fields: [falconId], references: [id])
-  falconId       String?       @map("falcon")
-  documentType   DocumentType? @relation("Document_documentType", fields: [documentTypeId], references: [id])
-  documentTypeId String?       @map("documentType")
-  documentNumber String        @default("")
-  scanFile       String        @default("")
-  rawFile        String        @default("")
-  owner          User?         @relation("Document_owner", fields: [ownerId], references: [id])
-  ownerId        String?       @map("owner")
-  createdAt      DateTime?     @default(now())
-  updatedAt      DateTime?     @default(now())
+  id                String        @id @default(cuid())
+  falcon            Falcon?       @relation("Document_falcon", fields: [falconId], references: [id])
+  falconId          String?       @map("falcon")
+  documentType      DocumentType? @relation("Document_documentType", fields: [documentTypeId], references: [id])
+  documentTypeId    String?       @map("documentType")
+  documentNumber    String        @default("")
+  scanFile_filesize Int?
+  scanFile_filename String?
+  rawFile_filesize  Int?
+  rawFile_filename  String?
+  owner             User?         @relation("Document_owner", fields: [ownerId], references: [id])
+  ownerId           String?       @map("owner")
+  createdAt         DateTime?     @default(now())
+  updatedAt         DateTime?     @default(now())
 
   @@index([falconId])
   @@index([documentTypeId])

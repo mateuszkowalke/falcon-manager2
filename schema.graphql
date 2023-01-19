@@ -868,11 +868,17 @@ type Document {
   falcon: Falcon
   documentType: DocumentType
   documentNumber: String
-  scanFile: String
-  rawFile: String
+  scanFile: FileFieldOutput
+  rawFile: FileFieldOutput
   owner: User
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
 }
 
 input DocumentWhereUniqueInput {
@@ -887,8 +893,6 @@ input DocumentWhereInput {
   falcon: FalconWhereInput
   documentType: DocumentTypeWhereInput
   documentNumber: StringFilter
-  scanFile: StringFilter
-  rawFile: StringFilter
   owner: UserWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -897,8 +901,6 @@ input DocumentWhereInput {
 input DocumentOrderByInput {
   id: OrderDirection
   documentNumber: OrderDirection
-  scanFile: OrderDirection
-  rawFile: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -907,8 +909,8 @@ input DocumentUpdateInput {
   falcon: FalconRelateToOneForUpdateInput
   documentType: DocumentTypeRelateToOneForUpdateInput
   documentNumber: String
-  scanFile: String
-  rawFile: String
+  scanFile: FileFieldInput
+  rawFile: FileFieldInput
   owner: UserRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -920,6 +922,13 @@ input DocumentTypeRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
+input FileFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input DocumentUpdateArgs {
   where: DocumentWhereUniqueInput!
   data: DocumentUpdateInput!
@@ -929,8 +938,8 @@ input DocumentCreateInput {
   falcon: FalconRelateToOneForCreateInput
   documentType: DocumentTypeRelateToOneForCreateInput
   documentNumber: String
-  scanFile: String
-  rawFile: String
+  scanFile: FileFieldInput
+  rawFile: FileFieldInput
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime

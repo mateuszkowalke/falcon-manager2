@@ -3,10 +3,14 @@ import {
   text,
   relationship,
   timestamp,
-  integer,
+  file,
 } from "@keystone-6/core/fields";
 
-import { defaultAccess, attachSessionUser, sharedResourceAccess } from "../auth/auth";
+import {
+  defaultAccess,
+  attachSessionUser,
+  sharedResourceAccess,
+} from "../auth/auth";
 
 export const DocumentType = list({
   access: sharedResourceAccess,
@@ -23,8 +27,8 @@ export const Document = list({
     falcon: relationship({ ref: "Falcon" }),
     documentType: relationship({ ref: "DocumentType" }),
     documentNumber: text(),
-    scanFile: text(),
-    rawFile: text(),
+    scanFile: file({ storage: "documentsStorage" }),
+    rawFile: file({ storage: "documentsStorage" }),
     owner: relationship({
       ref: "User.documents",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },

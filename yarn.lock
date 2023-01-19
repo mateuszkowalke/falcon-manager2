@@ -9420,6 +9420,11 @@
     "compress-commons" "^4.1.0"
     "readable-stream" "^3.6.0"
 
+"zod@^3.20.2":
+  "integrity" "sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ=="
+  "resolved" "https://registry.npmjs.org/zod/-/zod-3.20.2.tgz"
+  "version" "3.20.2"
+
 "zwitch@^1.0.0":
   "integrity" "sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw=="
   "resolved" "https://registry.npmjs.org/zwitch/-/zwitch-1.0.5.tgz"

@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "private": true,
   "scripts": {
-    "dev": "keystone dev",
+    "dev": "NODE_ENV=development keystone dev",
     "test:e2e": "jest --config ./jest.e2e.config.js",
     "test:unit": "jest",
     "test:e2e:watch": "jest --config ./jest.e2e.config.js --watch",
@@ -18,7 +18,8 @@
     "@keystone-6/auth": "^5.0.0",
     "@keystone-6/core": "^3.0.1",
     "@keystone-6/fields-document": "^5.0.0",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "@babel/core": "^7.19.6",
