@@ -497,6 +497,7 @@ type Address {
   city: String
   country: String
   breedingProject: BreedingProject
+  office: Office
   owner: User
   createdAt: DateTime
   updatedAt: DateTime
@@ -517,6 +518,7 @@ input AddressWhereInput {
   city: StringFilter
   country: StringFilter
   breedingProject: BreedingProjectWhereInput
+  office: OfficeWhereInput
   owner: UserWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -540,6 +542,7 @@ input AddressUpdateInput {
   city: String
   country: String
   breedingProject: BreedingProjectRelateToOneForUpdateInput
+  office: OfficeRelateToOneForUpdateInput
   owner: UserRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -557,6 +560,7 @@ input AddressCreateInput {
   city: String
   country: String
   breedingProject: BreedingProjectRelateToOneForCreateInput
+  office: OfficeRelateToOneForCreateInput
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -990,6 +994,7 @@ type Office {
   officeType: OfficeType
   name: String
   breedingProject: BreedingProject
+  address: Address
   owner: User
   createdAt: DateTime
   updatedAt: DateTime
@@ -1007,6 +1012,7 @@ input OfficeWhereInput {
   officeType: OfficeTypeWhereInput
   name: StringFilter
   breedingProject: BreedingProjectWhereInput
+  address: AddressWhereInput
   owner: UserWhereInput
   createdAt: DateTimeNullableFilter
   updatedAt: DateTimeNullableFilter
@@ -1023,6 +1029,7 @@ input OfficeUpdateInput {
   officeType: OfficeTypeRelateToOneForUpdateInput
   name: String
   breedingProject: BreedingProjectRelateToOneForUpdateInput
+  address: AddressRelateToOneForUpdateInput
   owner: UserRelateToOneForUpdateInput
   createdAt: DateTime
   updatedAt: DateTime
@@ -1043,6 +1050,7 @@ input OfficeCreateInput {
   officeType: OfficeTypeRelateToOneForCreateInput
   name: String
   breedingProject: BreedingProjectRelateToOneForCreateInput
+  address: AddressRelateToOneForCreateInput
   owner: UserRelateToOneForCreateInput
   createdAt: DateTime
   updatedAt: DateTime

@@ -226,6 +226,10 @@ var Address = (0, import_core4.list)({
     city: (0, import_fields4.text)({ validation: { isRequired: true } }),
     country: (0, import_fields4.text)({ validation: { isRequired: true } }),
     breedingProject: (0, import_fields4.relationship)({ ref: "BreedingProject.address" }),
+    office: (0, import_fields4.relationship)({
+      ref: "Office.address",
+      many: false
+    }),
     owner: (0, import_fields4.relationship)({
       ref: "User.addresses",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
@@ -406,6 +410,10 @@ var Office = (0, import_core9.list)({
     name: (0, import_fields9.text)(),
     breedingProject: (0, import_fields9.relationship)({
       ref: "BreedingProject.offices",
+      many: false
+    }),
+    address: (0, import_fields9.relationship)({
+      ref: "Address.office",
       many: false
     }),
     owner: (0, import_fields9.relationship)({

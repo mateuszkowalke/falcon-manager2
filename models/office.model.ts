@@ -25,6 +25,10 @@ export const Office = list({
       ref: "BreedingProject.offices",
       many: false,
     }),
+    address: relationship({
+      ref: "Address.office",
+      many: false,
+    }),
     owner: relationship({
       ref: "User.offices",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },

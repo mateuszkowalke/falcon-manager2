@@ -13,6 +13,10 @@ export const Address = list({
     city: text({ validation: { isRequired: true } }),
     country: text({ validation: { isRequired: true } }),
     breedingProject: relationship({ ref: "BreedingProject.address" }),
+    office: relationship({
+      ref: "Office.address",
+      many: false,
+    }),
     owner: relationship({
       ref: "User.addresses",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
