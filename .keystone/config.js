@@ -476,36 +476,30 @@ function getLocalStorageConfig(env) {
   };
 }
 function getS3StorageConfig(env) {
-  const {
-    S3_BUCKET_NAME: bucketName,
-    S3_REGION: region,
-    S3_ACCESS_KEY_ID: accessKeyId,
-    S3_SECRET_ACCESS_KEY: secretAccessKey
-  } = env;
-  const s3DocumentsStorage = {
-    kind: "s3",
+  const localDocumentsStorage = {
+    kind: "local",
     type: "file",
-    bucketName,
-    region,
-    accessKeyId,
-    secretAccessKey,
-    signed: { expiry: 5e3 }
+    storagePath: "public/documents",
+    serverRoute: {
+      path: "documents"
+    },
+    generateUrl: (path) => `${env.ASSET_BASE_URL}/documents${path}`
   };
-  const s3ImagesStorage = {
-    kind: "s3",
+  const localImagesStorage = {
+    kind: "local",
     type: "image",
-    bucketName,
-    region,
-    accessKeyId,
-    secretAccessKey,
-    signed: { expiry: 5e3 }
+    storagePath: "public/images",
+    serverRoute: {
+      path: "images"
+    },
+    generateUrl: (path) => `${env.ASSET_BASE_URL}/images${path}`
   };
   return {
     documentsStorage: {
-      ...s3DocumentsStorage
+      ...localDocumentsStorage
     },
     imagesStorage: {
-      ...s3ImagesStorage
+      ...localImagesStorage
     }
   };
 }
@@ -515,10 +509,6 @@ var import_zod = require("zod");
 var prodEnv = import_zod.z.object({
   NODE_ENV: import_zod.z.literal("production"),
   DATABASE_URL: import_zod.z.string().min(1),
-  S3_BUCKET_NAME: import_zod.z.string().min(1),
-  S3_REGION: import_zod.z.string().min(1),
-  S3_ACCESS_KEY_ID: import_zod.z.string().min(1),
-  S3_SECRET_ACCESS_KEY: import_zod.z.string().min(1),
   ASSET_BASE_URL: import_zod.z.string().min(1)
 });
 var devEnv = import_zod.z.object({
