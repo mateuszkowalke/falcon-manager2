@@ -1,11 +1,11 @@
 import { list } from "@keystone-6/core";
-import {
-  text,
-  relationship,
-  timestamp,
-} from "@keystone-6/core/fields";
+import { text, relationship, timestamp } from "@keystone-6/core/fields";
 
-import { defaultAccess, attachSessionUser, sharedResourceAccess } from "../auth/auth";
+import {
+  defaultAccess,
+  attachSessionUser,
+  sharedResourceAccess,
+} from "../auth/auth";
 
 export const OfficeType = list({
   access: sharedResourceAccess,
@@ -20,7 +20,9 @@ export const Office = list({
 
   fields: {
     officeType: relationship({ ref: "OfficeType" }),
-    name: text(),
+    name: text({ validation: { isRequired: true } }),
+    accountNo: text(),
+    notes: text(),
     breedingProject: relationship({
       ref: "BreedingProject.offices",
       many: false,
