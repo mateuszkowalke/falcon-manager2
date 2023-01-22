@@ -177,6 +177,8 @@ model Office {
   officeType      OfficeType?      @relation("Office_officeType", fields: [officeTypeId], references: [id])
   officeTypeId    String?          @map("officeType")
   name            String           @default("")
+  accountNo       String           @default("")
+  notes           String           @default("")
   breedingProject BreedingProject? @relation("BreedingProject_offices")
   address         Address?         @relation("Address_office")
   owner           User?            @relation("Office_owner", fields: [ownerId], references: [id])

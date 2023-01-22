@@ -407,7 +407,9 @@ var Office = (0, import_core9.list)({
   access: defaultAccess,
   fields: {
     officeType: (0, import_fields9.relationship)({ ref: "OfficeType" }),
-    name: (0, import_fields9.text)(),
+    name: (0, import_fields9.text)({ validation: { isRequired: true } }),
+    accountNo: (0, import_fields9.text)(),
+    notes: (0, import_fields9.text)(),
     breedingProject: (0, import_fields9.relationship)({
       ref: "BreedingProject.offices",
       many: false

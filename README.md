@@ -53,7 +53,7 @@ While Keystone works as a standalone app, you can embed your Keystone app into a
 
 # DEV WORKFLOW
 
-Use `docker compose -f docker-compose.db.yml up -d` and `npm run dev`.
+Use `docker compose -f docker-compose.db.yml up -d` and `npm run dev`. This always has to run to generate appropriate graphQL and prisma schemas.
 To make final checks before release run `docker compose up` - this simulates prod environment.
 
 # CI

@@ -993,6 +993,8 @@ type Office {
   id: ID!
   officeType: OfficeType
   name: String
+  accountNo: String
+  notes: String
   breedingProject: BreedingProject
   address: Address
   owner: User
@@ -1011,6 +1013,8 @@ input OfficeWhereInput {
   id: IDFilter
   officeType: OfficeTypeWhereInput
   name: StringFilter
+  accountNo: StringFilter
+  notes: StringFilter
   breedingProject: BreedingProjectWhereInput
   address: AddressWhereInput
   owner: UserWhereInput
@@ -1021,6 +1025,8 @@ input OfficeWhereInput {
 input OfficeOrderByInput {
   id: OrderDirection
   name: OrderDirection
+  accountNo: OrderDirection
+  notes: OrderDirection
   createdAt: OrderDirection
   updatedAt: OrderDirection
 }
@@ -1028,6 +1034,8 @@ input OfficeOrderByInput {
 input OfficeUpdateInput {
   officeType: OfficeTypeRelateToOneForUpdateInput
   name: String
+  accountNo: String
+  notes: String
   breedingProject: BreedingProjectRelateToOneForUpdateInput
   address: AddressRelateToOneForUpdateInput
   owner: UserRelateToOneForUpdateInput
@@ -1049,6 +1057,8 @@ input OfficeUpdateArgs {
 input OfficeCreateInput {
   officeType: OfficeTypeRelateToOneForCreateInput
   name: String
+  accountNo: String
+  notes: String
   breedingProject: BreedingProjectRelateToOneForCreateInput
   address: AddressRelateToOneForCreateInput
   owner: UserRelateToOneForCreateInput
