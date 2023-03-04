@@ -39,7 +39,7 @@ export const Falcon = list({
     widthOld: integer(),
     lengthOld: integer(),
     weightOld: integer(),
-    notes: text({ validation: { isRequired: true } }),
+    notes: text(),
     inPair: relationship({
       ref: "Pair",
       many: false,
