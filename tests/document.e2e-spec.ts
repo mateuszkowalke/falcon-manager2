@@ -4,6 +4,7 @@ import * as PrismaModule from ".prisma/client";
 import { getContext } from "@keystone-6/core/context";
 import { resetDatabase } from "@keystone-6/core/testing";
 import { Client } from "pg";
+import fs from "node:fs";
 
 import baseConfig from "../keystone";
 import { Sex } from "../models/falcon.model";
@@ -79,8 +80,6 @@ describe("Document", () => {
         documentType: {
           connect: { id: documentType.id },
         },
-        scanFile: "scan file url",
-        rawFile: "raw file url",
       };
 
       const document = await context
@@ -132,8 +131,6 @@ describe("Document", () => {
         documentType: {
           connect: { id: documentType.id },
         },
-        scanFile: "scan file url",
-        rawFile: "raw file url",
       };
       const document = await context
         .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
