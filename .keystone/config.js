@@ -526,7 +526,12 @@ var devEnv = import_zod.z.object({
   DATABASE_URL: import_zod.z.string().min(1),
   ASSET_BASE_URL: import_zod.z.string().min(1)
 });
-var envSchema = import_zod.z.union([prodEnv, devEnv]);
+var testEnv = import_zod.z.object({
+  NODE_ENV: import_zod.z.literal("test"),
+  DATABASE_URL: import_zod.z.string().min(1),
+  ASSET_BASE_URL: import_zod.z.string().min(1)
+});
+var envSchema = import_zod.z.union([prodEnv, devEnv, testEnv]);
 
 // keystone.ts
 if (!process.env.DATABASE_URL) {

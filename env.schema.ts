@@ -12,7 +12,13 @@ const devEnv = z.object({
   ASSET_BASE_URL: z.string().min(1),
 });
 
-export const envSchema = z.union([prodEnv, devEnv]);
+const testEnv = z.object({
+  NODE_ENV: z.literal("test"),
+  DATABASE_URL: z.string().min(1),
+  ASSET_BASE_URL: z.string().min(1),
+});
+
+export const envSchema = z.union([prodEnv, devEnv, testEnv]);
 
 export type Env = z.infer<typeof envSchema>;
 
