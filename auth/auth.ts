@@ -57,6 +57,10 @@ export function attachSessionUser({ operation, context, resolvedData }: any) {
   return resolvedData;
 }
 
+export function allowLoggedIn({session}: AccessArgs) {
+    return Boolean(session);
+}
+
 // dafault access is tested in users e2e test suite, so no need to retest lists
 // using the same pattern
 export const defaultAccess = {
@@ -64,10 +68,10 @@ export const defaultAccess = {
     create: ({ session, context, listKey, operation }: AccessArgs) =>
       listKey === "User"
         ? isAdmin({ session, context, listKey, operation })
-        : allowAll(),
-    query: allowAll,
-    update: allowAll,
-    delete: allowAll,
+        : allowLoggedIn({ session, context, listKey, operation }),
+    query: allowLoggedIn,
+    update: allowLoggedIn,
+    delete: allowLoggedIn,
   },
   filter: {
     query: allowAdminAndCurrentUser,

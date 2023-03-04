@@ -141,7 +141,18 @@ describe("User", () => {
       });
     });
 
-    it("Should allow user to view it's data", async () => {
+    it("Should prevent not logged in user to view user data", async () => {
+      const noAdminUserData = await context
+        .query.User.findOne({
+          where: {
+            id: noAdmin.id,
+          },
+          query: "id firstName lastName email isAdmin password { isSet }",
+        });
+      expect(noAdminUserData).toBeNull();
+    });
+
+    it("Should allow logged in user to view it's data", async () => {
       const noAdminUserData = await context
         .withSession({ data: { id: noAdmin.id, isAdmin: noAdmin.isAdmin } })
         .query.User.findOne({
