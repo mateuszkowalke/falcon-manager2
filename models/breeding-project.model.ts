@@ -10,8 +10,8 @@ export const BreedingProject = list({
     name: text({ validation: { isRequired: true } }),
     vetRegNo: text({ validation: { isRequired: true } }),
     address: relationship({ ref: "Address.breedingProject" }),
-    aviaries: relationship({ ref: "Aviary.breedingProject" }),
-    offices: relationship({ ref: "Office.breedingProject" }),
+    aviaries: relationship({ ref: "Aviary.breedingProject", many: true }),
+    offices: relationship({ ref: "Office.breedingProject", many: true }),
     owner: relationship({
       ref: "User.breedingProjects",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },

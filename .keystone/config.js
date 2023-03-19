@@ -60,12 +60,15 @@ function attachSessionUser({ operation, context, resolvedData }) {
   }
   return resolvedData;
 }
+function allowLoggedIn({ session: session2 }) {
+  return Boolean(session2);
+}
 var defaultAccess = {
   operation: {
-    create: ({ session: session2, context, listKey, operation }) => listKey === "User" ? isAdmin({ session: session2, context, listKey, operation }) : (0, import_access.allowAll)(),
-    query: import_access.allowAll,
-    update: import_access.allowAll,
-    delete: import_access.allowAll
+    create: ({ session: session2, context, listKey, operation }) => listKey === "User" ? isAdmin({ session: session2, context, listKey, operation }) : allowLoggedIn({ session: session2, context, listKey, operation }),
+    query: allowLoggedIn,
+    update: allowLoggedIn,
+    delete: allowLoggedIn
   },
   filter: {
     query: allowAdminAndCurrentUser,
@@ -110,6 +113,9 @@ var User = (0, import_core.list)({
       isIndexed: "unique"
     }),
     password: (0, import_fields.password)({ validation: { isRequired: true } }),
+    personalAddress: (0, import_fields.relationship)({
+      ref: "Address"
+    }),
     isAdmin: (0, import_fields.checkbox)({
       access: {
         update: isAdmin
@@ -161,8 +167,8 @@ var BreedingProject = (0, import_core2.list)({
     name: (0, import_fields2.text)({ validation: { isRequired: true } }),
     vetRegNo: (0, import_fields2.text)({ validation: { isRequired: true } }),
     address: (0, import_fields2.relationship)({ ref: "Address.breedingProject" }),
-    aviaries: (0, import_fields2.relationship)({ ref: "Aviary.breedingProject" }),
-    offices: (0, import_fields2.relationship)({ ref: "Office.breedingProject" }),
+    aviaries: (0, import_fields2.relationship)({ ref: "Aviary.breedingProject", many: true }),
+    offices: (0, import_fields2.relationship)({ ref: "Office.breedingProject", many: true }),
     owner: (0, import_fields2.relationship)({
       ref: "User.breedingProjects",
       ui: { hideCreate: true, createView: { fieldMode: "hidden" } },
@@ -268,7 +274,9 @@ var Falcon = (0, import_core5.list)({
       ],
       defaultValue: "UNKNOWN" /* Unknown */
     }),
-    birthDate: (0, import_fields5.timestamp)(),
+    birthDate: (0, import_fields5.timestamp)({ defaultValue: new Date().toISOString() }),
+    accquiredDate: (0, import_fields5.timestamp)(),
+    citesNo: (0, import_fields5.text)(),
     source: (0, import_fields5.text)({ validation: { isRequired: true } }),
     widthYoung: (0, import_fields5.integer)(),
     lengthYoung: (0, import_fields5.integer)(),
@@ -276,7 +284,7 @@ var Falcon = (0, import_core5.list)({
     widthOld: (0, import_fields5.integer)(),
     lengthOld: (0, import_fields5.integer)(),
     weightOld: (0, import_fields5.integer)(),
-    notes: (0, import_fields5.text)({ validation: { isRequired: true } }),
+    notes: (0, import_fields5.text)(),
     inPair: (0, import_fields5.relationship)({
       ref: "Pair",
       many: false
@@ -407,6 +415,7 @@ var Office = (0, import_core9.list)({
   access: defaultAccess,
   fields: {
     officeType: (0, import_fields9.relationship)({ ref: "OfficeType" }),
+    documentType: (0, import_fields9.relationship)({ ref: "DocumentType", many: false }),
     name: (0, import_fields9.text)({ validation: { isRequired: true } }),
     accountNo: (0, import_fields9.text)(),
     notes: (0, import_fields9.text)(),

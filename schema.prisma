@@ -13,21 +13,25 @@ generator client {
 }
 
 model User {
-  id               String            @id @default(cuid())
-  firstName        String            @default("")
-  lastName         String            @default("")
-  email            String            @unique @default("")
-  password         String
-  isAdmin          Boolean           @default(false)
-  falcons          Falcon?           @relation("Falcon_owner")
-  breedingProjects BreedingProject[] @relation("BreedingProject_owner")
-  addresses        Address[]         @relation("Address_owner")
-  aviaries         Aviary[]          @relation("Aviary_owner")
-  pairs            Pair[]            @relation("Pair_owner")
-  documents        Document[]        @relation("Document_owner")
-  offices          Office[]          @relation("Office_owner")
-  createdAt        DateTime?         @default(now())
-  updatedAt        DateTime?         @default(now())
+  id                String            @id @default(cuid())
+  firstName         String            @default("")
+  lastName          String            @default("")
+  email             String            @unique @default("")
+  password          String
+  personalAddress   Address?          @relation("User_personalAddress", fields: [personalAddressId], references: [id])
+  personalAddressId String?           @map("personalAddress")
+  isAdmin           Boolean           @default(false)
+  falcons           Falcon?           @relation("Falcon_owner")
+  breedingProjects  BreedingProject[] @relation("BreedingProject_owner")
+  addresses         Address[]         @relation("Address_owner")
+  aviaries          Aviary[]          @relation("Aviary_owner")
+  pairs             Pair[]            @relation("Pair_owner")
+  documents         Document[]        @relation("Document_owner")
+  offices           Office[]          @relation("Office_owner")
+  createdAt         DateTime?         @default(now())
+  updatedAt         DateTime?         @default(now())
+
+  @@index([personalAddressId])
 }
 
 model BreedingProject {
@@ -35,9 +39,8 @@ model BreedingProject {
   name      String    @default("")
   vetRegNo  String    @default("")
   address   Address?  @relation("Address_breedingProject")
-  aviaries  Aviary?   @relation("Aviary_breedingProject")
-  offices   Office?   @relation("BreedingProject_offices", fields: [officesId], references: [id])
-  officesId String?   @unique @map("offices")
+  aviaries  Aviary[]  @relation("Aviary_breedingProject")
+  offices   Office[]  @relation("Office_breedingProject")
   owner     User?     @relation("BreedingProject_owner", fields: [ownerId], references: [id])
   ownerId   String?   @map("owner")
   createdAt DateTime? @default(now())
@@ -54,30 +57,32 @@ model Aviary {
   falconsId         String?          @unique @map("falcons")
   lastCleaned       DateTime?
   breedingProject   BreedingProject? @relation("Aviary_breedingProject", fields: [breedingProjectId], references: [id])
-  breedingProjectId String?          @unique @map("breedingProject")
+  breedingProjectId String?          @map("breedingProject")
   owner             User?            @relation("Aviary_owner", fields: [ownerId], references: [id])
   ownerId           String?          @map("owner")
   createdAt         DateTime?        @default(now())
   updatedAt         DateTime?        @default(now())
 
+  @@index([breedingProjectId])
   @@index([ownerId])
 }
 
 model Address {
-  id                String           @id @default(cuid())
-  street            String           @default("")
-  no                String           @default("")
-  zipCode           String           @default("")
-  city              String           @default("")
-  country           String           @default("")
-  breedingProject   BreedingProject? @relation("Address_breedingProject", fields: [breedingProjectId], references: [id])
-  breedingProjectId String?          @unique @map("breedingProject")
-  office            Office?          @relation("Address_office", fields: [officeId], references: [id])
-  officeId          String?          @unique @map("office")
-  owner             User?            @relation("Address_owner", fields: [ownerId], references: [id])
-  ownerId           String?          @map("owner")
-  createdAt         DateTime?        @default(now())
-  updatedAt         DateTime?        @default(now())
+  id                        String           @id @default(cuid())
+  street                    String           @default("")
+  no                        String           @default("")
+  zipCode                   String           @default("")
+  city                      String           @default("")
+  country                   String           @default("")
+  breedingProject           BreedingProject? @relation("Address_breedingProject", fields: [breedingProjectId], references: [id])
+  breedingProjectId         String?          @unique @map("breedingProject")
+  office                    Office?          @relation("Address_office", fields: [officeId], references: [id])
+  officeId                  String?          @unique @map("office")
+  owner                     User?            @relation("Address_owner", fields: [ownerId], references: [id])
+  ownerId                   String?          @map("owner")
+  createdAt                 DateTime?        @default(now())
+  updatedAt                 DateTime?        @default(now())
+  from_User_personalAddress User[]           @relation("User_personalAddress")
 
   @@index([ownerId])
 }
@@ -89,7 +94,9 @@ model Falcon {
   species              Species?       @relation("Falcon_species", fields: [speciesId], references: [id])
   speciesId            String?        @map("species")
   sex                  FalconSexType? @default(UNKNOWN)
-  birthDate            DateTime?
+  birthDate            DateTime?      @default("2023-03-19T22:05:23.085Z")
+  accquiredDate        DateTime?
+  citesNo              String         @default("")
   source               String         @default("")
   widthYoung           Int?
   lengthYoung          Int?
@@ -170,23 +177,29 @@ model DocumentType {
   id                         String     @id @default(cuid())
   name                       String     @default("")
   from_Document_documentType Document[] @relation("Document_documentType")
+  from_Office_documentType   Office[]   @relation("Office_documentType")
 }
 
 model Office {
-  id              String           @id @default(cuid())
-  officeType      OfficeType?      @relation("Office_officeType", fields: [officeTypeId], references: [id])
-  officeTypeId    String?          @map("officeType")
-  name            String           @default("")
-  accountNo       String           @default("")
-  notes           String           @default("")
-  breedingProject BreedingProject? @relation("BreedingProject_offices")
-  address         Address?         @relation("Address_office")
-  owner           User?            @relation("Office_owner", fields: [ownerId], references: [id])
-  ownerId         String?          @map("owner")
-  createdAt       DateTime?        @default(now())
-  updatedAt       DateTime?        @default(now())
+  id                String           @id @default(cuid())
+  officeType        OfficeType?      @relation("Office_officeType", fields: [officeTypeId], references: [id])
+  officeTypeId      String?          @map("officeType")
+  documentType      DocumentType?    @relation("Office_documentType", fields: [documentTypeId], references: [id])
+  documentTypeId    String?          @map("documentType")
+  name              String           @default("")
+  accountNo         String           @default("")
+  notes             String           @default("")
+  breedingProject   BreedingProject? @relation("Office_breedingProject", fields: [breedingProjectId], references: [id])
+  breedingProjectId String?          @map("breedingProject")
+  address           Address?         @relation("Address_office")
+  owner             User?            @relation("Office_owner", fields: [ownerId], references: [id])
+  ownerId           String?          @map("owner")
+  createdAt         DateTime?        @default(now())
+  updatedAt         DateTime?        @default(now())
 
   @@index([officeTypeId])
+  @@index([documentTypeId])
+  @@index([breedingProjectId])
   @@index([ownerId])
 }
 

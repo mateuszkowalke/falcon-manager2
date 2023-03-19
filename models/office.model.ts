@@ -20,6 +20,7 @@ export const Office = list({
 
   fields: {
     officeType: relationship({ ref: "OfficeType" }),
+    documentType: relationship({ ref: "DocumentType", many: false }),
     name: text({ validation: { isRequired: true } }),
     accountNo: text(),
     notes: text(),

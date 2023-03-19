@@ -70,6 +70,7 @@ describe("Falcon", () => {
         ring: "1234",
         sex: Sex.Unknown,
         birthDate: new Date(),
+        accquiredDate: new Date(),
         source: "testFalocnSource",
         aviary: {
           create: {

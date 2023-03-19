@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Falcon" ADD COLUMN     "accquiredDate" TIMESTAMP(3),
+ALTER COLUMN "birthDate" SET DEFAULT '2023-03-19 22:05:23.085 +00:00';

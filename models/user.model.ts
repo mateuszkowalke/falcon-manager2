@@ -23,6 +23,9 @@ export const User = list({
       isIndexed: "unique",
     }),
     password: password({ validation: { isRequired: true } }),
+    personalAddress: relationship({
+      ref: "Address",
+    }),
     isAdmin: checkbox({
       access: {
         update: isAdmin,

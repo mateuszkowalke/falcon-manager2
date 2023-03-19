@@ -104,6 +104,7 @@ describe("Document", () => {
         ring: "1234",
         sex: Sex.Male,
         birthDate: new Date(),
+        accquiredDate: new Date(),
         source: "testFalocnSource",
         widthYoung: 14,
         lengthYoung: 14,
