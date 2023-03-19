@@ -31,7 +31,7 @@ export const Falcon = list({
       ],
       defaultValue: Sex.Unknown,
     }),
-    birthDate: timestamp({ defaultValue: (new Date()).toISOString() }),
+    birthDate: timestamp({ defaultValue: (new Date("2020-05-12T23:50:21.817Z")).toISOString() }),
     accquiredDate: timestamp(),
     citesNo: text(),
     source: text({ validation: { isRequired: true } }),

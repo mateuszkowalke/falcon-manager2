@@ -94,7 +94,7 @@ model Falcon {
   species              Species?       @relation("Falcon_species", fields: [speciesId], references: [id])
   speciesId            String?        @map("species")
   sex                  FalconSexType? @default(UNKNOWN)
-  birthDate            DateTime?      @default("2023-03-19T22:05:23.085Z")
+  birthDate            DateTime?      @default("2020-05-12T23:50:21.817Z")
   accquiredDate        DateTime?
   citesNo              String         @default("")
   source               String         @default("")

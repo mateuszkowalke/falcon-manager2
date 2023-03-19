@@ -274,7 +274,7 @@ var Falcon = (0, import_core5.list)({
       ],
       defaultValue: "UNKNOWN" /* Unknown */
     }),
-    birthDate: (0, import_fields5.timestamp)({ defaultValue: new Date().toISOString() }),
+    birthDate: (0, import_fields5.timestamp)({ defaultValue: new Date("2020-05-12T23:50:21.817Z").toISOString() }),
     accquiredDate: (0, import_fields5.timestamp)(),
     citesNo: (0, import_fields5.text)(),
     source: (0, import_fields5.text)({ validation: { isRequired: true } }),
