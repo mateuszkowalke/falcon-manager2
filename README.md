@@ -58,7 +58,7 @@ To make final checks before release run `docker compose up` - this simulates pro
 
 # CI
 
-To release tag commit with v0.0.0 style tag, then push it using `git push origin v.0.0.0`
+To release tag commit with v0.0.0 style tag, then push it using `git push origin v0.0.0`
 
 # Running using docker image
 
